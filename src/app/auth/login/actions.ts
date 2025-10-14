@@ -5,7 +5,10 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
-export async function loginForm(formData: FormData) {
+export async function loginForm(
+  _prevState: { error?: string } | null,
+  formData: FormData
+) {
   const supabase = await createClient();
 
   // type-casting here for convenience
@@ -18,9 +21,9 @@ export async function loginForm(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect("/auth/error");
+    return { error: "Nieprawidłowe hasło lub email" };
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/panel");
 }
