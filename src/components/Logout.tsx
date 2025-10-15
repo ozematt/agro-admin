@@ -2,12 +2,13 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { LogOut } from "lucide-react";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
-type Props = {
-  mobile?: boolean;
-};
-
-const Logout = ({ mobile }: Props) => {
+const Logout = () => {
   const logout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -15,15 +16,14 @@ const Logout = ({ mobile }: Props) => {
 
   return (
     <form>
-      <button
-        onClick={logout}
-        className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-slate-300 ${
-          mobile ? "hover:bg-blue-100" : "hover:bg-slate-800"
-        } `}
-      >
-        <LogOut />
-        Wyloguj
-      </button>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton onClick={logout}>
+            <LogOut />
+            <span>Wyloguj</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
     </form>
   );
 };

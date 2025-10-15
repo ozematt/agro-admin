@@ -5,31 +5,35 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { createSlug } from "@/lib/helpers";
 
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+
 interface Props {
   property: { id: string; name: string };
   mobile?: boolean;
 }
 
-const PropertyLink = ({ property, mobile }: Props) => {
+const PropertyLink = ({ property }: Props) => {
   // DATA
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const slug = createSlug(property.name);
   const href = `/panel/${slug}`;
-  const isActive = pathname === href;
+  // const isActive = pathname === href;
 
   //   UI
   return (
-    <Link
-      key={property.id}
-      href={`/panel/${createSlug(property.name)}`}
-      className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
-        isActive
-          ? "bg-blue-600 font-bold text-white"
-          : `${mobile ? "bg-gray-50 font-bold text-slate-900 hover:bg-blue-100" : "text-slate-300 hover:bg-slate-800"}`
-      }`}
-    >
-      <House size={20} />
-      {property.name}
+    <Link href={`/dashboard/${createSlug(property.name)}`}>
+      <SidebarMenuItem>
+        <SidebarMenuButton tooltip={property.name} className="">
+          <House />
+          {property.name}
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </Link>
   );
 };
