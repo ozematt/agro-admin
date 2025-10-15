@@ -26,9 +26,8 @@ const PropertyLink = ({ property }: Props) => {
         <SidebarMenuButton
           tooltip={property.name}
           className={`${
-            isActive
-              ? "bg-primary text-white hover:bg-primary hover:text-white/80"
-              : ""
+            isActive &&
+            "bg-primary text-white hover:bg-primary hover:text-white/80 dark:text-primary-foreground"
           }`}
         >
           <House />
