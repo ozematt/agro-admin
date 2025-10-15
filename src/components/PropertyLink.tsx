@@ -3,15 +3,9 @@
 import { House } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { createSlug } from "@/lib/helpers";
+import { createSlug } from "@/utils/helpers";
 
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 interface Props {
   property: { id: string; name: string };
@@ -27,7 +21,7 @@ const PropertyLink = ({ property }: Props) => {
 
   //   UI
   return (
-    <Link href={`/dashboard/${createSlug(property.name)}`}>
+    <Link href={`/panel/${createSlug(property.name)}`}>
       <SidebarMenuItem>
         <SidebarMenuButton tooltip={property.name} className="">
           <House />

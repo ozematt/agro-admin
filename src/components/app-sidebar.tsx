@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/sidebar";
 import Logout from "./Logout";
 import NavItems from "./NavItems";
+import Link from "next/link";
+import { Crown } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -22,12 +24,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-1.5 h-12"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-lg font-semibold">AdminPanel.</span>
-              </a>
+              <Link href="/panel" className="space-x-2 ">
+                <Crown className="size-5!" />
+                <div>
+                  <p className="text-base font-semibold">AdminPanel.</p>
+                  <p className="text-xs opacity-50">System zarządzania</p>
+                </div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

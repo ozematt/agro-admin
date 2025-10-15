@@ -1,7 +1,5 @@
-import { PropertySkeleton } from "@/components";
-
 const Loading = () => {
-  return <PropertySkeleton />;
+  return <></>;
 };
 
 export default Loading;

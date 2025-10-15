@@ -1,15 +1,4 @@
-// import MyCalendar from "@/components/UnitCalendar";
-import {
-  PropertyCalendar,
-  PropertyGallery,
-  PropertyReservation,
-} from "@/components";
-
-// Symulacja wolnego ładowania
-// async function slowData() {
-//   await new Promise((resolve) => setTimeout(resolve, 13000)); // 13 sekundy
-//   return { data: "loaded" };
-// }
+import CalendarWrapper from "@/components/CalendarWrapper";
 
 const PropertyPage = async ({
   params,
@@ -21,10 +10,8 @@ const PropertyPage = async ({
   const { name } = await params;
 
   return (
-    <div className="space-y-6">
-      <PropertyCalendar />
-      <PropertyReservation />
-      <PropertyGallery />
+    <div className=" p-4  md:p-6">
+      <CalendarWrapper />
     </div>
   );
 };
