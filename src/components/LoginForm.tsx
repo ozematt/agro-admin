@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-
 import { useActionState } from "react";
 import { loginForm } from "@/app/auth/login/actions";
 
@@ -39,6 +38,7 @@ const LoginForm = () => {
                     <Input
                       id="email"
                       type="email"
+                      name="email"
                       placeholder="jan@email.com"
                       className="h-12 w-full rounded-lg border border-gray-300 px-4 py-3 transition outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
                       required
@@ -57,6 +57,7 @@ const LoginForm = () => {
                     <Input
                       id="password"
                       type="password"
+                      name="password"
                       placeholder="••••••••"
                       required
                       className="h-12 w-full rounded-lg border border-gray-300 px-4 py-3 transition outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
