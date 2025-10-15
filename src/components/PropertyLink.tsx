@@ -14,16 +14,23 @@ interface Props {
 
 const PropertyLink = ({ property }: Props) => {
   // DATA
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const slug = createSlug(property.name);
   const href = `/panel/${slug}`;
-  // const isActive = pathname === href;
+  const isActive = pathname === href;
 
   //   UI
   return (
     <Link href={`/panel/${createSlug(property.name)}`}>
       <SidebarMenuItem>
-        <SidebarMenuButton tooltip={property.name} className="">
+        <SidebarMenuButton
+          tooltip={property.name}
+          className={`${
+            isActive
+              ? "bg-primary text-white hover:bg-primary hover:text-white/80"
+              : ""
+          }`}
+        >
           <House />
           {property.name}
         </SidebarMenuButton>
