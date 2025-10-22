@@ -4,3 +4,5 @@ export { default as LoginForm } from "./LoginForm";
 export { default as LoginInfo } from "./LoginInfo";
 export { default as NavItems } from "./NavItems";
 export { default as ModeToggle } from "./ModeToggle";
+export { default as SectionTitle } from "./SectionTitle";
+export { default as StatusBadge } from "./StatusBadge";

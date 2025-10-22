@@ -1,5 +1,6 @@
-import { Edit, Eye, Image, Trash2, Upload } from "lucide-react";
-import SectionTitle from "./SectionTitle";
+import { Edit, Eye, Image as Img, Trash2, Upload } from "lucide-react";
+import { SectionTitle } from "@/components";
+import Image from "next/image";
 
 const images = [
   {
@@ -40,7 +41,7 @@ const UnitGallery = () => {
   return (
     <div className="sectionContainer">
       <div className="mb-6 flex items-center justify-between">
-        <SectionTitle Icon={Image} title="Galeria" />
+        <SectionTitle Icon={Img} title="Galeria" />
         <button className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
           <Upload size={20} />
           Dodaj zdjęcie
@@ -53,7 +54,7 @@ const UnitGallery = () => {
             className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
           >
             <div className="relative aspect-video overflow-hidden bg-slate-100">
-              <img
+              <Image
                 src={image.url}
                 alt={image.name}
                 className="h-full w-full object-cover transition-transform group-hover:scale-105"

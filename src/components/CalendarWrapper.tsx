@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { EventCalendar, type CalendarEvent } from "@/components/event-calendar";
+import {
+  EventCalendar,
+  // type CalendarEvent
+} from "@/components/event-calendar";
 const CalendarWrapper = () => {
   const [events, setEvents] = useState([]);
 

@@ -8,6 +8,7 @@ const PropertyPage = async ({
   // await slowData();
 
   const { name } = await params;
+  console.log(name);
 
   return (
     <div className=" p-4  md:p-6">

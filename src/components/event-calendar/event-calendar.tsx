@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 
 import {
   AgendaDaysToShow,
-  AgendaView,
+  // AgendaView,
   CalendarDndProvider,
   CalendarEvent,
   CalendarView,

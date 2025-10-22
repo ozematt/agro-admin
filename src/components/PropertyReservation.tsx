@@ -1,4 +1,4 @@
-import { Check, Edit, Mail, Phone, User, Users } from "lucide-react";
+import { Check, Edit, Mail, Phone, Users } from "lucide-react";
 import { Status } from "./StatusBadge";
 import { SectionTitle, StatusBadge } from "@/components";
 
