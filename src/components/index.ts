@@ -6,3 +6,5 @@ export { default as NavItems } from "./NavItems";
 export { default as ModeToggle } from "./ModeToggle";
 export { default as SectionTitle } from "./SectionTitle";
 export { default as StatusBadge } from "./StatusBadge";
+export { default as AddReservationDialog } from "./AddReservationDialog";
+export { default as DatePicker } from "./DatePicker";

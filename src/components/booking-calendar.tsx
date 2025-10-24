@@ -9,7 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AddReservationDialog } from "@/components";
 
 const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Niedz"];
 const MONTHS = [
@@ -98,10 +99,7 @@ export function BookingCalendar() {
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="default" size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Dodaj rezerwację</span>
-            </Button>
+            <AddReservationDialog />
           </div>
         </div>
       </CardHeader>
