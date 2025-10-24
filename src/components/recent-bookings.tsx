@@ -74,7 +74,7 @@ export function RecentBookings() {
         <CardDescription>Najnowsze rezerwacje i zapytania</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[450px] space-y-4 overflow-scroll">
+        <div className="h-[550px] space-y-4 overflow-y-scroll">
           {bookings.map((booking) => (
             <div
               key={booking.id}

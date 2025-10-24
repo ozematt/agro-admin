@@ -67,7 +67,7 @@ export function PhotoGallery() {
         <CardDescription>Zarządzaj zdjęciami swojego obiektu</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid max-h-[350px] grid-cols-2 gap-4 overflow-scroll sm:grid-cols-3">
+        <div className="grid max-h-[350px] grid-cols-2 gap-4 overflow-y-scroll sm:grid-cols-3">
           {photos.map((photo) => (
             <div
               key={photo.id}
