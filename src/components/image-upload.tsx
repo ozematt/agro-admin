@@ -35,8 +35,10 @@ export function ImageUpload() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upload Photos</CardTitle>
-        <CardDescription>Add new images to your cabin gallery</CardDescription>
+        <CardTitle>Prześlij zdjęcia</CardTitle>
+        <CardDescription>
+          Dodaj nowe zdjęcia do galerii swojego obiektu
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -65,13 +67,13 @@ export function ImageUpload() {
                   <Upload className="text-primary h-6 w-6" />
                 </div>
                 <div>
-                  <p className="font-medium">Click to upload</p>
+                  <p className="font-medium">Kliknij, aby przesłać</p>
                   <p className="text-muted-foreground text-sm">
-                    or drag and drop
+                    lub przeciągnij i upuść
                   </p>
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  PNG, JPG up to 10MB
+                  PNG, JPG, WebP do 5MB
                 </p>
               </div>
               <input
@@ -85,11 +87,11 @@ export function ImageUpload() {
 
           <div className="flex gap-2">
             <Button className="flex-1" disabled={!preview}>
-              Upload Photo
+              Prześlij zdjęcie
             </Button>
             {preview && (
               <Button variant="outline" onClick={clearPreview}>
-                Cancel
+                Anuluj
               </Button>
             )}
           </div>

@@ -42,25 +42,40 @@ const photos = [
     url: "/cabin-bathroom-with-modern-fixtures.jpg",
     alt: "Bathroom",
   },
+  {
+    id: 7,
+    url: "/cabin-kitchen-with-wooden-counters.jpg",
+    alt: "Kitchen",
+  },
+  {
+    id: 8,
+    url: "/cabin-deck-with-mountain-sunset-view.jpg",
+    alt: "Deck view",
+  },
+  {
+    id: 9,
+    url: "/cabin-bathroom-with-modern-fixtures.jpg",
+    alt: "Bathroom",
+  },
 ];
 
 export function PhotoGallery() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Photo Gallery</CardTitle>
-        <CardDescription>Manage your cabin images</CardDescription>
+        <CardTitle>Galeria zdjęć</CardTitle>
+        <CardDescription>Zarządzaj zdjęciami swojego obiektu</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="grid max-h-[350px] grid-cols-2 gap-4 overflow-scroll sm:grid-cols-3">
           {photos.map((photo) => (
             <div
               key={photo.id}
               className="group bg-muted hover:ring-primary relative aspect-square overflow-hidden rounded-lg border transition-all hover:ring-2"
             >
               <Image
-                width={200}
-                height={200}
+                width={100}
+                height={100}
                 src={photo.url || "/placeholder.svg"}
                 alt={photo.alt}
                 className="h-full w-full object-cover"

@@ -92,13 +92,15 @@ export function BookingCalendar() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Availability Calendar</CardTitle>
-            <CardDescription>Manage bookings and availability</CardDescription>
+            <CardTitle>Kalendarz rezerwacji</CardTitle>
+            <CardDescription>
+              Zarządzaj rezerwacjami i dostępnością
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="default" size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Add Reservation</span>
+              <span className="hidden sm:inline">Dodaj rezerwację</span>
             </Button>
           </div>
         </div>
@@ -132,15 +134,15 @@ export function BookingCalendar() {
           <div className="flex items-center justify-center gap-6 border-t pt-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="bg-primary h-3 w-3 rounded" />
-              <span className="text-muted-foreground">Booked</span>
+              <span className="text-muted-foreground">Zarezerwowany</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="bg-secondary ring-primary h-3 w-3 rounded ring-2" />
-              <span className="text-muted-foreground">Today</span>
+              <span className="text-muted-foreground">Dziś</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded border-2" />
-              <span className="text-muted-foreground">Available</span>
+              <span className="text-muted-foreground">Dostępny</span>
             </div>
           </div>
         </div>

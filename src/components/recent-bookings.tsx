@@ -1,6 +1,13 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, User, DollarSign } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, User, DollarSign, Trash2 } from "lucide-react";
+import { Button } from "./ui/button";
 
 const bookings = [
   {
@@ -10,7 +17,7 @@ const bookings = [
     checkOut: "Oct 7, 2025",
     nights: 2,
     amount: "$480",
-    status: "confirmed",
+    status: "potwierdzone",
   },
   {
     id: 2,
@@ -19,7 +26,7 @@ const bookings = [
     checkOut: "Oct 15, 2025",
     nights: 3,
     amount: "$720",
-    status: "confirmed",
+    status: "potwierdzone",
   },
   {
     id: 3,
@@ -28,7 +35,7 @@ const bookings = [
     checkOut: "Oct 21, 2025",
     nights: 1,
     amount: "$240",
-    status: "pending",
+    status: "oczekuje",
   },
   {
     id: 4,
@@ -37,32 +44,58 @@ const bookings = [
     checkOut: "Oct 30, 2025",
     nights: 3,
     amount: "$720",
-    status: "confirmed",
+    status: "potwierdzone",
   },
-]
+  {
+    id: 5,
+    guest: "David Park",
+    checkIn: "Oct 27, 2025",
+    checkOut: "Oct 30, 2025",
+    nights: 3,
+    amount: "$720",
+    status: "potwierdzone",
+  },
+  {
+    id: 6,
+    guest: "David Park",
+    checkIn: "Oct 27, 2025",
+    checkOut: "Oct 30, 2025",
+    nights: 3,
+    amount: "$720",
+    status: "potwierdzone",
+  },
+];
 
 export function RecentBookings() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Bookings</CardTitle>
-        <CardDescription>Latest reservations and inquiries</CardDescription>
+        <CardTitle>Ostatnie rezerwacje</CardTitle>
+        <CardDescription>Najnowsze rezerwacje i zapytania</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="h-[450px] space-y-4 overflow-scroll">
           {bookings.map((booking) => (
             <div
               key={booking.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-secondary/50 transition-colors"
+              className="bg-card hover:bg-secondary/50 flex flex-col justify-between gap-4 rounded-lg border p-4 transition-colors sm:flex-row sm:items-center"
             >
-              <div className="space-y-2 flex-1">
+              <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
+                  <User className="text-muted-foreground h-4 w-4" />
                   <span className="font-medium">{booking.guest}</span>
-                  <Badge variant={booking.status === "confirmed" ? "default" : "secondary"}>{booking.status}</Badge>
+                  <Badge
+                    variant={
+                      booking.status === "potwierdzone"
+                        ? "default"
+                        : "secondary"
+                    }
+                  >
+                    {booking.status}
+                  </Badge>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     <span>
@@ -77,13 +110,20 @@ export function RecentBookings() {
               </div>
 
               <div className="flex items-center gap-2 text-lg font-semibold">
-                <DollarSign className="h-4 w-4 text-primary" />
+                <DollarSign className="text-primary h-4 w-4" />
                 {booking.amount}
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
