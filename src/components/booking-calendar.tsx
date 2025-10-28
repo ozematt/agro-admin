@@ -29,29 +29,33 @@ const MONTHS = [
 ];
 
 // Sample booking data
-const bookedDates = [5, 6, 7, 12, 13, 14, 15, 20, 21, 27, 28, 29, 30];
+const bookedDates = [
+  new Date(2025, 9, 5),
+  new Date(2025, 9, 6),
+  new Date(2025, 9, 7),
+];
 
 export function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
   const today = new Date();
   const isCurrentMonth =
-    today.getFullYear() === year && today.getMonth() === month;
+    today.getFullYear() === currentYear && today.getMonth() === currentMonth;
 
-  const firstDayRaw = new Date(year, month, 1).getDay();
+  const firstDayRaw = new Date(currentYear, currentMonth, 1).getDay();
   const firstDay = firstDayRaw === 0 ? 6 : firstDayRaw - 1;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   const previousMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
+    setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
     setSelectedDate(null);
   };
 
   const nextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
+    setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
     setSelectedDate(null);
   };
 
@@ -59,23 +63,50 @@ export function BookingCalendar() {
     setSelectedDate(day);
   };
 
+  // Pomocnicza funkcja do porównywania dat (tylko rok-miesiąc-dzień)
+  const isSameDay = (date1: Date, date2: Date): boolean => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
+  // Funkcja sprawdzająca czy data jest zarezerwowana
+  const isDateBooked = (
+    day: number,
+    month: number,
+    year: number,
+    bookedDates: Date[],
+  ): boolean => {
+    const checkDate = new Date(year, month, day);
+    return bookedDates.some((bookedDate) => isSameDay(checkDate, bookedDate));
+  };
+
+  // W komponencie:
   const days = [];
+  // const today = new Date();
+
   for (let i = 0; i < firstDay; i++) {
     days.push(<div key={`empty-${i}`} className="aspect-square" />);
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const isBooked = bookedDates.includes(day);
-    const isToday = isCurrentMonth && day === today.getDate();
-    const isSelected = selectedDate === day;
+    const currentDate = new Date(currentYear, currentMonth, day);
+    const isBooked = bookedDates.some((bookedDate) =>
+      isSameDay(currentDate, bookedDate),
+    );
+    const isToday = isSameDay(currentDate, today);
+    const isSelected = selectedDate === day && isCurrentMonth; // opcjonalnie dodaj sprawdzenie miesiąca
 
     days.push(
       <button
         key={day}
         onClick={() => handleDateClick(day)}
+        disabled={isBooked} // opcjonalnie - blokuj kliknięcie w zarezerwowane dni
         className={`hover:bg-secondary aspect-square rounded-lg text-sm font-medium transition-colors ${
           isBooked
-            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+            ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-not-allowed"
             : isSelected
               ? "bg-accent text-accent-foreground ring-primary ring-2"
               : isToday
@@ -110,7 +141,7 @@ export function BookingCalendar() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <h3 className="text-lg font-semibold">
-              {MONTHS[month]} {year}
+              {MONTHS[currentMonth]} {currentYear}
             </h3>
             <Button variant="outline" size="icon" onClick={nextMonth}>
               <ChevronRight className="h-4 w-4" />

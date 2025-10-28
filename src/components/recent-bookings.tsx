@@ -6,15 +6,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, User, DollarSign, Trash2 } from "lucide-react";
+import { Calendar, User, Trash2, Users } from "lucide-react";
 import { Button } from "./ui/button";
 
 type Reservation = {
   id: string;
   first_name: string;
   last_name: string;
-  check_in: string; // ISO date string
-  check_out: string; // ISO date string
+  check_in: string;
+  check_out: string;
+  nights: number;
+  status: "oczekujący" | "potwierdzony";
+  guests: number;
   created_at?: string;
 };
 
@@ -42,7 +45,13 @@ export function RecentBookings({
                   <span className="font-medium">
                     {booking.first_name} {booking.last_name}
                   </span>
-                  <Badge variant="secondary">potwierdzone</Badge>
+                  <Badge
+                    variant={
+                      booking.status === "oczekujący" ? "default" : "secondary"
+                    }
+                  >
+                    {booking.status}
+                  </Badge>
                 </div>
 
                 <div className="text-muted-foreground flex items-center gap-4 text-sm">
@@ -51,15 +60,14 @@ export function RecentBookings({
                     <span>
                       {booking.check_in} - {booking.check_out}
                     </span>
+                    ·<span className="font-bold">{booking.nights} noce</span>
                   </div>
-                  <span>•</span>
-                  <span>{/* nights could be derived client-side later */}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-lg font-semibold">
-                <DollarSign className="text-primary h-4 w-4" />
-                {/* amount optional */}
+                {booking.guests}
+                <Users />
               </div>
               <Button
                 variant="ghost"
