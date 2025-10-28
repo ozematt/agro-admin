@@ -9,64 +9,20 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User, DollarSign, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 
-const bookings = [
-  {
-    id: 1,
-    guest: "Sarah Johnson",
-    checkIn: "Oct 5, 2025",
-    checkOut: "Oct 7, 2025",
-    nights: 2,
-    amount: "$480",
-    status: "potwierdzone",
-  },
-  {
-    id: 2,
-    guest: "Michael Chen",
-    checkIn: "Oct 12, 2025",
-    checkOut: "Oct 15, 2025",
-    nights: 3,
-    amount: "$720",
-    status: "potwierdzone",
-  },
-  {
-    id: 3,
-    guest: "Emily Rodriguez",
-    checkIn: "Oct 20, 2025",
-    checkOut: "Oct 21, 2025",
-    nights: 1,
-    amount: "$240",
-    status: "oczekuje",
-  },
-  {
-    id: 4,
-    guest: "David Park",
-    checkIn: "Oct 27, 2025",
-    checkOut: "Oct 30, 2025",
-    nights: 3,
-    amount: "$720",
-    status: "potwierdzone",
-  },
-  {
-    id: 5,
-    guest: "David Park",
-    checkIn: "Oct 27, 2025",
-    checkOut: "Oct 30, 2025",
-    nights: 3,
-    amount: "$720",
-    status: "potwierdzone",
-  },
-  {
-    id: 6,
-    guest: "David Park",
-    checkIn: "Oct 27, 2025",
-    checkOut: "Oct 30, 2025",
-    nights: 3,
-    amount: "$720",
-    status: "potwierdzone",
-  },
-];
+type Reservation = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  check_in: string; // ISO date string
+  check_out: string; // ISO date string
+  created_at?: string;
+};
 
-export function RecentBookings() {
+export function RecentBookings({
+  reservations = [],
+}: {
+  reservations?: Reservation[];
+}) {
   return (
     <Card>
       <CardHeader>
@@ -74,8 +30,8 @@ export function RecentBookings() {
         <CardDescription>Najnowsze rezerwacje i zapytania</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[550px] space-y-4 overflow-y-scroll">
-          {bookings.map((booking) => (
+        <div className="h-[550px] space-y-4 overflow-y-auto">
+          {reservations.map((booking) => (
             <div
               key={booking.id}
               className="bg-card hover:bg-secondary/50 flex flex-col justify-between gap-4 rounded-lg border p-4 transition-colors sm:flex-row sm:items-center"
@@ -83,35 +39,27 @@ export function RecentBookings() {
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <User className="text-muted-foreground h-4 w-4" />
-                  <span className="font-medium">{booking.guest}</span>
-                  <Badge
-                    variant={
-                      booking.status === "potwierdzone"
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {booking.status}
-                  </Badge>
+                  <span className="font-medium">
+                    {booking.first_name} {booking.last_name}
+                  </span>
+                  <Badge variant="secondary">potwierdzone</Badge>
                 </div>
 
                 <div className="text-muted-foreground flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     <span>
-                      {booking.checkIn} - {booking.checkOut}
+                      {booking.check_in} - {booking.check_out}
                     </span>
                   </div>
                   <span>•</span>
-                  <span>
-                    {booking.nights} {booking.nights === 1 ? "night" : "nights"}
-                  </span>
+                  <span>{/* nights could be derived client-side later */}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-lg font-semibold">
                 <DollarSign className="text-primary h-4 w-4" />
-                {booking.amount}
+                {/* amount optional */}
               </div>
               <Button
                 variant="ghost"
@@ -122,6 +70,9 @@ export function RecentBookings() {
               </Button>
             </div>
           ))}
+          {reservations.length === 0 && (
+            <div className="text-muted-foreground text-sm">Brak rezerwacji</div>
+          )}
         </div>
       </CardContent>
     </Card>
