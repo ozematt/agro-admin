@@ -33,17 +33,15 @@ const bookedDates = [
   new Date(2025, 9, 5),
   new Date(2025, 9, 6),
   new Date(2025, 9, 7),
+  new Date(2025, 10, 7),
 ];
 
 export function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const today = new Date();
-  const isCurrentMonth =
-    today.getFullYear() === currentYear && today.getMonth() === currentMonth;
 
   const firstDayRaw = new Date(currentYear, currentMonth, 1).getDay();
   const firstDay = firstDayRaw === 0 ? 6 : firstDayRaw - 1;
@@ -51,16 +49,10 @@ export function BookingCalendar() {
 
   const previousMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
-    setSelectedDate(null);
   };
 
   const nextMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
-    setSelectedDate(null);
-  };
-
-  const handleDateClick = (day: number) => {
-    setSelectedDate(day);
   };
 
   // Pomocnicza funkcja do porównywania dat (tylko rok-miesiąc-dzień)
@@ -73,15 +65,15 @@ export function BookingCalendar() {
   };
 
   // Funkcja sprawdzająca czy data jest zarezerwowana
-  const isDateBooked = (
-    day: number,
-    month: number,
-    year: number,
-    bookedDates: Date[],
-  ): boolean => {
-    const checkDate = new Date(year, month, day);
-    return bookedDates.some((bookedDate) => isSameDay(checkDate, bookedDate));
-  };
+  // const isDateBooked = (
+  //   day: number,
+  //   month: number,
+  //   year: number,
+  //   bookedDates: Date[],
+  // ): boolean => {
+  //   const checkDate = new Date(year, month, day);
+  //   return bookedDates.some((bookedDate) => isSameDay(checkDate, bookedDate));
+  // };
 
   // W komponencie:
   const days = [];
@@ -97,27 +89,21 @@ export function BookingCalendar() {
       isSameDay(currentDate, bookedDate),
     );
     const isToday = isSameDay(currentDate, today);
-    const isSelected = selectedDate === day && isCurrentMonth; // opcjonalnie dodaj sprawdzenie miesiąca
 
     days.push(
       <button
         key={day}
-        onClick={() => handleDateClick(day)}
-        disabled={isBooked} // opcjonalnie - blokuj kliknięcie w zarezerwowane dni
-        className={`hover:bg-secondary aspect-square rounded-lg text-sm font-medium transition-colors ${
+        className={`aspect-square rounded-lg text-sm font-medium transition-colors ${
           isBooked
-            ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-not-allowed"
-            : isSelected
-              ? "bg-accent text-accent-foreground ring-primary ring-2"
-              : isToday
-                ? "bg-secondary ring-primary ring-2"
-                : "hover:bg-secondary"
+            ? "bg-primary text-primary-foreground"
+            : isToday && "bg-secondary ring-primary ring-2"
         }`}
       >
         {day}
       </button>,
     );
   }
+  // console.log(days);
 
   return (
     <Card>

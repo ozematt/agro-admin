@@ -12,6 +12,7 @@ type Reservation = {
   nights: number;
   status: "oczekujący" | "potwierdzony";
   guests: number;
+  property: string;
   created_at?: string;
 };
 
@@ -25,6 +26,7 @@ const reservation: Reservation[] = [
     nights: 3,
     status: "potwierdzony",
     guests: 2,
+    property: "domek-1",
   },
   {
     id: "2",
@@ -35,6 +37,7 @@ const reservation: Reservation[] = [
     nights: 2,
     status: "oczekujący",
     guests: 1,
+    property: "domek-1",
   },
   {
     id: "3",
@@ -45,6 +48,7 @@ const reservation: Reservation[] = [
     nights: 3,
     status: "potwierdzony",
     guests: 3,
+    property: "domek-1",
   },
   {
     id: "4",
@@ -55,6 +59,7 @@ const reservation: Reservation[] = [
     nights: 3,
     status: "oczekujący",
     guests: 4,
+    property: "domek-1",
   },
   {
     id: "5",
@@ -65,6 +70,7 @@ const reservation: Reservation[] = [
     nights: 3,
     status: "potwierdzony",
     guests: 2,
+    property: "domek-1",
   },
 ];
 
@@ -76,6 +82,7 @@ const PropertyPage = async ({
   // await slowData();
 
   const { name } = await params;
+  // logika pobrania rezerwacji
   console.log(name);
 
   return (

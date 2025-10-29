@@ -12,11 +12,54 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { Building, Building2, House, Plus } from "lucide-react";
 
 import { DatePicker } from "@/components";
+import { usePathname } from "next/navigation";
+
+const PROPERTIES = [
+  {
+    name: "Domek 1",
+    slug: "domek-1",
+    description: "Super domek",
+    icon: House,
+    id: 1,
+  },
+  {
+    name: "Domek 2",
+    slug: "domek-2",
+    description: "Super domek",
+    icon: Building,
+    id: 2,
+  },
+  {
+    name: "Domek 3",
+    slug: "domek-3",
+    description: "Super domek",
+    icon: Building2,
+    id: 3,
+  },
+];
 
 const AddReservationDialog = () => {
+  const pathname = usePathname();
+  const slug = pathname.split("/")[2];
+  const property = PROPERTIES.find((property) => property.slug === slug);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const booking = {
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      guests: Number(formData.get("guests")),
+      checkIn: formData.get("checkIn") as string,
+      checkOut: formData.get("checkOut") as string,
+      property: property?.name ?? "Brak",
+    };
+    console.log("Nowa rezerwacja:", booking);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -26,70 +69,86 @@ const AddReservationDialog = () => {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Dodaj nową rezerwacje</DialogTitle>
-          <DialogDescription>
-            Wprowadź poniżej dane gościa i date rezerwacji.
-          </DialogDescription>
-        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>Dodaj nową rezerwację</DialogTitle>
+            <DialogDescription>
+              Wprowadź poniżej dane gościa i daty rezerwacji.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="firstName">Imię</Label>
-            <Input id="firstName" placeholder="Jan" className="w-full" />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="lastName">Nazwisko</Label>
-            <Input id="lastName" placeholder="Kowalski" className="w-full" />
-          </div>
-        </div>
-
-        {/* Number of Guests Input Field */}
-        <div className="grid gap-2">
-          <Label htmlFor="guests">Ilość Gości</Label>
-          <Input
-            id="guests"
-            type="number"
-            min="1"
-            max="10"
-            defaultValue="2"
-            placeholder="2"
-            className="w-full"
-          />
-        </div>
-
-        {/* Date Input */}
-        <div className="grid gap-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <div className="relative">
-                <DatePicker label="Data zameldowania" />
-              </div>
+              <Label htmlFor="firstName">Imię</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Jan"
+              />
             </div>
             <div className="grid gap-2">
-              <DatePicker label="Data wymeldowania" />
+              <Label htmlFor="lastName">Nazwisko</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Kowalski"
+              />
             </div>
           </div>
-        </div>
 
-        {/* Static Hotel Display */}
-        <div className="grid gap-2">
-          <Label>Domek</Label>
-          <div className="border-border bg-muted/50 flex items-center gap-3 rounded-lg border px-4 py-3">
-            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-md"></div>
-            <div className="flex-1">
-              <p className="text-foreground font-medium">Hotel A</p>
-              <p className="text-muted-foreground text-sm">Luxury Suite</p>
-            </div>
+          <div className="grid gap-2">
+            <Label htmlFor="guests">Ilość gości</Label>
+            <Input
+              id="guests"
+              name="guests"
+              type="number"
+              min="1"
+              max="10"
+              defaultValue="2"
+            />
           </div>
-        </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" type="button">
-            Anuluj
-          </Button>
-          <Button type="submit">Zapisz Rezerwacje</Button>
-        </DialogFooter>
+          <div className="grid grid-cols-2 gap-4">
+            <DatePicker label="Data zameldowania" name="checkIn" id="checkIn" />
+            <DatePicker
+              label="Data wymeldowania"
+              name="checkOut"
+              id="checkOut"
+            />
+          </div>
+
+          {property ? (
+            <div className="grid gap-2">
+              <Label>Domek</Label>
+              <div className="border-border bg-muted/50 flex items-center gap-3 rounded-lg border px-4 py-3">
+                <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-md">
+                  {property.icon && (
+                    <property.icon className="text-primary h-5 w-5" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-foreground font-medium">{property.name}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {property.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-muted-foreground border-border rounded-lg border px-4 py-3 italic">
+              Brak wybranego domku
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" type="button">
+              Anuluj
+            </Button>
+            <Button type="submit">Zapisz rezerwację</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
