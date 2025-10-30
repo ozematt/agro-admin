@@ -16,6 +16,8 @@ import { Building, Building2, House, Plus } from "lucide-react";
 
 import { DatePicker } from "@/components";
 import { usePathname } from "next/navigation";
+import { useActionState } from "react";
+import { submitForm } from "@/app/panel/[name]/actions";
 
 const PROPERTIES = [
   {
@@ -46,19 +48,9 @@ const AddReservationDialog = () => {
   const slug = pathname.split("/")[2];
   const property = PROPERTIES.find((property) => property.slug === slug);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const booking = {
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      guests: Number(formData.get("guests")),
-      checkIn: formData.get("checkIn") as string,
-      checkOut: formData.get("checkOut") as string,
-      property: property?.name ?? "Brak",
-    };
-    console.log("Nowa rezerwacja:", booking);
-  };
+  const [state, formAction] = useActionState(submitForm, {});
+
+  console.log(state);
 
   return (
     <Dialog>
@@ -69,7 +61,7 @@ const AddReservationDialog = () => {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <DialogHeader>
             <DialogTitle>Dodaj nową rezerwację</DialogTitle>
             <DialogDescription>
@@ -119,9 +111,15 @@ const AddReservationDialog = () => {
             />
           </div>
 
-          {property ? (
+          {property && (
             <div className="grid gap-2">
-              <Label>Domek</Label>
+              <Label htmlFor="property">Domek</Label>
+              <Input
+                type="hidden"
+                name="property"
+                id="property"
+                value={property.slug}
+              />
               <div className="border-border bg-muted/50 flex items-center gap-3 rounded-lg border px-4 py-3">
                 <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-md">
                   {property.icon && (
@@ -135,10 +133,6 @@ const AddReservationDialog = () => {
                   </p>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="text-muted-foreground border-border rounded-lg border px-4 py-3 italic">
-              Brak wybranego domku
             </div>
           )}
 
