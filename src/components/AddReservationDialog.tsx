@@ -43,12 +43,14 @@ const PROPERTIES = [
   },
 ];
 
+const initialState = { error: {}, success: "" };
+
 const AddReservationDialog = () => {
   const pathname = usePathname();
   const slug = pathname.split("/")[2];
   const property = PROPERTIES.find((property) => property.slug === slug);
 
-  const [state, formAction] = useActionState(submitForm, {});
+  const [state, formAction] = useActionState(submitForm, initialState);
 
   console.log(state);
 
@@ -114,6 +116,7 @@ const AddReservationDialog = () => {
           {property && (
             <div className="grid gap-2">
               <Label htmlFor="property">Domek</Label>
+              {/* hidden input - PROPERTY */}
               <Input
                 type="hidden"
                 name="property"
@@ -135,7 +138,8 @@ const AddReservationDialog = () => {
               </div>
             </div>
           )}
-
+          {/* hidden input - STATUS */}
+          <Input type="hidden" name="status" id="status" value="potwierdzony" />
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" type="button">
               Anuluj

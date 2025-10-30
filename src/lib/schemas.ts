@@ -7,4 +7,5 @@ export const reservationDialogSchema = z.object({
   checkIn: z.string(),
   checkOut: z.string(),
   property: z.string(),
+  status: z.string(),
 });

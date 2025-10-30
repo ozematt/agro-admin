@@ -3,15 +3,14 @@
 import { reservationDialogSchema } from "@/lib/schemas";
 
 type State = {
-  firstName: string;
-  lastName: string;
-  guests: number;
-  checkIn: string;
-  checkOut: string;
-  property: string;
+  error?: Record<string, string[]>;
+  success?: string;
 };
 
-export async function submitForm(prevState: State, formData: FormData) {
+export async function submitForm(
+  prevState: State,
+  formData: FormData,
+): Promise<State> {
   console.log(Object.fromEntries(formData.entries()));
 
   const parsedData = reservationDialogSchema.safeParse({
@@ -21,6 +20,7 @@ export async function submitForm(prevState: State, formData: FormData) {
     checkIn: formData.get("checkIn"),
     checkOut: formData.get("checkOut"),
     property: formData.get("property"),
+    status: formData.get("status"),
   });
 
   if (!parsedData.success) {
