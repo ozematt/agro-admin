@@ -2,6 +2,7 @@ import { BookingCalendar } from "@/components/booking-calendar";
 import { ImageUpload } from "@/components/image-upload";
 import { PhotoGallery } from "@/components/photo-gallery";
 import { RecentBookings } from "@/components/recent-bookings";
+import { getAllImagesFromBucket } from "./actions";
 
 type Reservation = {
   id: string;
@@ -79,11 +80,10 @@ const PropertyPage = async ({
 }: {
   params: Promise<{ name: string }>;
 }) => {
-  // await slowData();
-
   const { name } = await params;
-  // logika pobrania rezerwacji
-  console.log(name);
+  const { images, error } = await getAllImagesFromBucket(name);
+
+  // TODO:logika pobrania rezerwacji
 
   return (
     <main className="container mx-auto max-w-7xl px-4 py-8">
@@ -96,8 +96,8 @@ const PropertyPage = async ({
 
         {/* Bottom Section: Image Management */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ImageUpload />
-          <PhotoGallery />
+          <ImageUpload bucketName={name} />
+          <PhotoGallery images={images} error={error} bucketName={name} />
         </div>
       </div>
     </main>

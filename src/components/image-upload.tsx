@@ -14,13 +14,19 @@ import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+// import { revalidatePath } from "next/cache";
+
+type Prop = {
+  bucketName: string;
+};
 
 const maxSizeMB = 3;
 const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 const maxFiles = 6;
 
-export function ImageUpload() {
+export function ImageUpload({ bucketName }: Prop) {
   const [isPending, setIsPending] = useState(false);
+  // console.log(propertyName);
 
   const [
     { files, isDragging, errors },
@@ -44,11 +50,16 @@ export function ImageUpload() {
   async function handleUpload() {
     const formData = new FormData();
     if (files.length === 0) return;
+
+    // Dodaje pliki
     files.forEach(({ file }) => formData.append("files", file as File));
+
+    // Dodaje nazwe obiektu/property = bucket w supabase
+    formData.append("bucketName", bucketName);
 
     try {
       setIsPending(true);
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/image/upload", {
         method: "POST",
         body: formData,
       });
@@ -62,14 +73,16 @@ export function ImageUpload() {
       const data = await res.json();
       console.log(data);
       clearFiles();
+      // revalidatePath(`/panel/${propertyName}`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Nieznany błąd.";
-      // Wyczyść pliki po pomyślnym przesłaniu
+      toast.error(errorMessage);
     } finally {
       setIsPending(false);
     }
   }
+
   return (
     <Card>
       <CardHeader>

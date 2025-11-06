@@ -19,7 +19,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <div className="flex flex-1 items-center justify-center ">
+      <div className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center lg:hidden">
             <h1 className="text-3xl font-bold text-gray-800">AdminPanel</h1>
