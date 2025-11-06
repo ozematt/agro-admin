@@ -14,47 +14,47 @@ import Image from "next/image";
 const photos = [
   {
     id: 1,
-    url: "/cozy-cabin-exterior-with-mountain-view.jpg",
+    url: "/",
     alt: "Cabin exterior",
   },
   {
     id: 2,
-    url: "/modern-cabin-living-room-with-fireplace.jpg",
+    url: "/",
     alt: "Living room",
   },
   {
     id: 3,
-    url: "/cabin-bedroom-with-large-windows.jpg",
+    url: "/",
     alt: "Bedroom",
   },
   {
     id: 4,
-    url: "/cabin-kitchen-with-wooden-counters.jpg",
+    url: "/",
     alt: "Kitchen",
   },
   {
     id: 5,
-    url: "/cabin-deck-with-mountain-sunset-view.jpg",
+    url: "/",
     alt: "Deck view",
   },
   {
     id: 6,
-    url: "/cabin-bathroom-with-modern-fixtures.jpg",
+    url: "/",
     alt: "Bathroom",
   },
   {
     id: 7,
-    url: "/cabin-kitchen-with-wooden-counters.jpg",
+    url: "/",
     alt: "Kitchen",
   },
   {
     id: 8,
-    url: "/cabin-deck-with-mountain-sunset-view.jpg",
+    url: "/",
     alt: "Deck view",
   },
   {
     id: 9,
-    url: "/cabin-bathroom-with-modern-fixtures.jpg",
+    url: "/",
     alt: "Bathroom",
   },
 ];
@@ -76,7 +76,7 @@ export function PhotoGallery() {
               <Image
                 width={100}
                 height={100}
-                src={photo.url || "/placeholder.svg"}
+                src={photo.url}
                 alt={photo.alt}
                 className="h-full w-full object-cover"
               />

@@ -1,6 +1,7 @@
 "use server";
 
 import { reservationDialogSchema } from "@/lib/schemas";
+// import { createClient } from "@/utils/supabase/server";
 
 type State = {
   error?: Record<string, string[]>;
@@ -27,5 +28,52 @@ export async function submitForm(
     return { error: parsedData.error.flatten().fieldErrors };
   }
 
+  // TODO: Add logic to save the reservation to the database (e.g., Supabase)
+  // const { error } = await supabase.from('reservations').insert([parsedData.data]);
+
   return { success: "dane wysłane" };
 }
+
+// obliczanie miejsca we wiadrze:
+// import { createClient } from '@supabase/supabase-js';
+
+// // --- KONFIGURACJA ---
+// const SUPABASE_URL = 'https://twoj-projekt.supabase.co';
+// const SUPABASE_KEY = 'twój-klucz-serwisowy'; // użyj service_role key
+// const BUCKET_NAME = 'nazwa_bucketu';
+
+// // --- KOD ---
+// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// async function obliczUzycieBucketu(bucket) {
+//   let totalBytes = 0;
+//   let page = 0;
+//   const pageSize = 1000;
+
+//   while (true) {
+//     const { data, error } = await supabase.storage
+//       .from(bucket)
+//       .list('', { limit: pageSize, offset: page * pageSize });
+
+//     if (error) {
+//       console.error('Błąd przy pobieraniu:', error);
+//       break;
+//     }
+
+//     if (!data || data.length === 0) break;
+
+//     for (const file of data) {
+//       if (file.metadata?.size) {
+//         totalBytes += file.metadata.size;
+//       }
+//     }
+
+//     if (data.length < pageSize) break;
+//     page++;
+//   }
+
+//   const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+//   console.log(`Bucket "${bucket}" zajmuje ${mb} MB`);
+// }
+
+// obliczUzycieBucketu(BUCKET_NAME);

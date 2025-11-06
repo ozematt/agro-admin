@@ -52,7 +52,7 @@ const AddReservationDialog = () => {
 
   const [state, formAction] = useActionState(submitForm, initialState);
 
-  console.log(state);
+  // console.log(state);
 
   return (
     <Dialog>
