@@ -7,9 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
 import Image from "next/image";
+import { ImageRemoveAlert } from "@/components";
 
 type GalleryImage = {
   name: string;
@@ -21,17 +20,10 @@ type GalleryImage = {
 };
 type Prop = { images: GalleryImage[]; error?: string; bucketName: string };
 
-export function PhotoGallery({ images, error, bucketName }: Prop) {
-  async function handleDelete(bucket: string, path: string) {
-    const res = await fetch("/api/image/remove", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bucket, path }),
-    });
-    if (res.ok) console.log("Plik usunięty");
-    else console.error("Błąd:", await res.json());
-  }
+// TODO: dodac licznik procentowy pojemności
+// TODO: dodac galerie przeglądania zdjęć
 
+const PhotoGallery = ({ images, error, bucketName }: Prop) => {
   let content;
 
   if (error) {
@@ -59,14 +51,10 @@ export function PhotoGallery({ images, error, bucketName }: Prop) {
               loading="eager"
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-              <Button
-                variant="destructive"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleDelete(bucketName, image.path)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <ImageRemoveAlert
+                imagePath={image.path}
+                bucketName={bucketName}
+              />
             </div>
           </div>
         ))}
@@ -83,9 +71,6 @@ export function PhotoGallery({ images, error, bucketName }: Prop) {
       <CardContent>{content}</CardContent>
     </Card>
   );
-}
+};
 
-// TODO: Dialog przy usuwaniu pliku === czy na pewno usunąć.
-// TODO: ogarnąć api
-// TODO: dodac licznik procentowy pojemności
-// TODO: dodac galerie przeglądania zdjęć
+export default PhotoGallery;

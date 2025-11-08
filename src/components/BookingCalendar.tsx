@@ -36,7 +36,7 @@ const bookedDates = [
   new Date(2025, 10, 7),
 ];
 
-export function BookingCalendar() {
+const BookingCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const currentYear = currentDate.getFullYear();
@@ -164,4 +164,6 @@ export function BookingCalendar() {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default BookingCalendar;

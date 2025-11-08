@@ -1,7 +1,9 @@
-import { BookingCalendar } from "@/components/booking-calendar";
-import { ImageUpload } from "@/components/image-upload";
-import { PhotoGallery } from "@/components/photo-gallery";
-import { RecentBookings } from "@/components/recent-bookings";
+import {
+  PhotoGallery,
+  ImageUpload,
+  BookingCalendar,
+  RecentBookings,
+} from "@/components";
 import { getAllImagesFromBucket } from "./actions";
 
 type Reservation = {
@@ -81,6 +83,7 @@ const PropertyPage = async ({
   params: Promise<{ name: string }>;
 }) => {
   const { name } = await params;
+
   const { images, error } = await getAllImagesFromBucket(name);
 
   // TODO:logika pobrania rezerwacji

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import PropertyLink from "./PropertyLink";
 import {
   SidebarGroup,
@@ -26,7 +27,7 @@ const NavItems = () => {
     <>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarGroupLabel className="mb-[-15px] mt-3">
+          <SidebarGroupLabel className="mt-3 mb-[-15px]">
             Obiekty
           </SidebarGroupLabel>
         </SidebarMenuItem>
@@ -35,8 +36,10 @@ const NavItems = () => {
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
             {properties.map((property) => (
-              <PropertyLink key={property.id} property={property} />
-            ))}{" "}
+              <Suspense key={property.id} fallback={<div>Loading...</div>}>
+                <PropertyLink property={property} />
+              </Suspense>
+            ))}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

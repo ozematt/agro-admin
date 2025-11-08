@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import sharp from "sharp";
+import { revalidatePath } from "next/cache";
 
 const supabase = createAdminClient();
 
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     const successful = results.filter((r) => r.status === "fulfilled");
     const failed = results.filter((r) => r.status === "rejected");
-    // revalidatePath(`panel/${bucketName}`);
+    revalidatePath(`panel/${bucketName}`);
 
     return NextResponse.json({
       success: true,

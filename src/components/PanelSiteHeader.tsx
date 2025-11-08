@@ -6,7 +6,7 @@ import { ModeToggle } from "@/components";
 import { usePathname } from "next/navigation";
 import { createTitle } from "@/utils/helpers";
 
-export function SiteHeader() {
+const PanelSiteHeader = () => {
   const pathname = usePathname();
 
   const title = createTitle(pathname);
@@ -26,4 +26,6 @@ export function SiteHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default PanelSiteHeader;

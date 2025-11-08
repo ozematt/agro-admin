@@ -1,6 +1,5 @@
-import { ReactNode } from "react";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
+import { ReactNode, Suspense } from "react";
+import { PanelSidebar, PanelSiteHeader } from "@/components";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const Layout = async ({ children }: { children: ReactNode }) => {
@@ -15,9 +14,11 @@ const Layout = async ({ children }: { children: ReactNode }) => {
             } as React.CSSProperties
           }
         >
-          <AppSidebar variant="inset" />
+          <PanelSidebar variant="inset" />
           <SidebarInset>
-            <SiteHeader />
+            <Suspense fallback={<div>Loading...</div>}>
+              <PanelSiteHeader />
+            </Suspense>
             {children}
           </SidebarInset>
         </SidebarProvider>

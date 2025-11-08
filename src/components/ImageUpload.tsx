@@ -14,7 +14,6 @@ import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-// import { revalidatePath } from "next/cache";
 
 type Prop = {
   bucketName: string;
@@ -24,9 +23,10 @@ const maxSizeMB = 3;
 const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 const maxFiles = 6;
 
-export function ImageUpload({ bucketName }: Prop) {
+// TODO: Zmienić język wyświetlanego błędu, przy przekroczeniu 6 zdjęć
+
+const ImageUpload = ({ bucketName }: Prop) => {
   const [isPending, setIsPending] = useState(false);
-  // console.log(propertyName);
 
   const [
     { files, isDragging, errors },
@@ -231,4 +231,6 @@ export function ImageUpload({ bucketName }: Prop) {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default ImageUpload;

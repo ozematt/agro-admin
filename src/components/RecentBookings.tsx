@@ -21,11 +21,11 @@ type Reservation = {
   created_at?: string;
 };
 
-export function RecentBookings({
+const RecentBookings = ({
   reservations = [],
 }: {
   reservations?: Reservation[];
-}) {
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -85,4 +85,6 @@ export function RecentBookings({
       </CardContent>
     </Card>
   );
-}
+};
+
+export default RecentBookings;

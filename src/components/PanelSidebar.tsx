@@ -1,7 +1,5 @@
 "use client";
 
-// import { IconInnerShadowTop } from "@tabler/icons-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +14,7 @@ import NavItems from "./NavItems";
 import Link from "next/link";
 import { Crown } from "lucide-react";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const PanelSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -24,9 +22,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5 h-12"
+              className="h-12 data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="/panel" className="space-x-2 ">
+              <Link href="/panel" className="space-x-2">
                 <Crown className="size-5!" />
                 <div>
                   <p className="text-base font-semibold">AdminPanel.</p>
@@ -46,4 +44,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
     </Sidebar>
   );
-}
+};
+
+export default PanelSidebar;
