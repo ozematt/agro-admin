@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import PropertyLink from "./PropertyLink";
 import {
   SidebarGroup,
@@ -8,7 +7,7 @@ import {
   SidebarMenuItem,
 } from "./ui/sidebar";
 
-const properties = [
+const NAV_ITEMS = [
   {
     id: "1",
     name: "Domek_1",
@@ -21,7 +20,8 @@ const properties = [
     id: "3",
     name: "Domek_3",
   },
-];
+] as const;
+
 const NavItems = () => {
   return (
     <>
@@ -35,10 +35,8 @@ const NavItems = () => {
       <SidebarGroup>
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
-            {properties.map((property) => (
-              <Suspense key={property.id} fallback={<div>Loading...</div>}>
-                <PropertyLink property={property} />
-              </Suspense>
+            {NAV_ITEMS.map((item) => (
+              <PropertyLink key={item.id} propertyName={item.name} />
             ))}
           </SidebarMenu>
         </SidebarGroupContent>

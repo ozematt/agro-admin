@@ -17,8 +17,8 @@ const PanelSiteHeader = () => {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <Suspense fallback={<HeaderTitleSkeleton />}>
-          <HeaderTitle />
+        <Suspense fallback={<Skeleton className="h-4 w-40" />}>
+          <SiteHeaderWrapper />
         </Suspense>
         <div className="ml-auto flex items-center gap-2">
           <ModeToggle />
@@ -30,16 +30,11 @@ const PanelSiteHeader = () => {
 
 export default PanelSiteHeader;
 
-// NOTE: Mam włączone "cachComponents", więc musiałem zrobić wrapper dla miejsca w którym korzystam z params
-const HeaderTitle = () => {
+// NOTE: for cachComponents, coz params are in use
+const SiteHeaderWrapper = () => {
   const pathname = usePathname();
 
   const title = createTitle(pathname);
 
   return <p className="text-base font-medium">{title}</p>;
-};
-
-// NOTE: Skeleton dla tytułu
-const HeaderTitleSkeleton = () => {
-  return <Skeleton className="h-4 w-40"></Skeleton>;
 };

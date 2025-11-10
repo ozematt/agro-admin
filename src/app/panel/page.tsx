@@ -13,15 +13,15 @@ const PanelPage = async () => {
         </div>
       }
     >
-      <AuthCheck />
+      <AuthCheckWrapper />
     </Suspense>
   );
 };
 
 export default PanelPage;
 
-// NOTE: Mam włączone "cachComponents", więc musiałem zrobić wrapper sprawdzający zalogowanego użytkownika
-const AuthCheck = async () => {
+// NOTE: for cachComponents, coz async is in use
+const AuthCheckWrapper = async () => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
