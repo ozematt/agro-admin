@@ -1,13 +1,34 @@
 import { SectionCards } from "@/components/section-cards";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { Suspense } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 const PanelPage = async () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto my-auto">
+          <Spinner className="size-8" />
+        </div>
+      }
+    >
+      <AuthCheck />
+    </Suspense>
+  );
+};
+
+export default PanelPage;
+
+// NOTE: Mam włączone "cachComponents", więc musiałem zrobić wrapper sprawdzający zalogowanego użytkownika
+const AuthCheck = async () => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
+
   if (error || !data?.user) {
     redirect("/auth/login");
   }
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
@@ -18,5 +39,3 @@ const PanelPage = async () => {
     </div>
   );
 };
-
-export default PanelPage;

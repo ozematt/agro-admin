@@ -37,6 +37,7 @@ export async function submitForm(
 }
 
 export async function getAllImagesFromBucket(bucketName: string) {
+  // const {name} = await bucketName
   try {
     const { data: files, error } = await supabase.storage
       .from(bucketName)

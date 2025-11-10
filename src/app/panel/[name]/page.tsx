@@ -1,3 +1,5 @@
+"use cache";
+
 import {
   PhotoGallery,
   ImageUpload,
@@ -5,6 +7,7 @@ import {
   RecentBookings,
 } from "@/components";
 import { getAllImagesFromBucket } from "./actions";
+import { Suspense } from "react";
 
 type Reservation = {
   id: string;
@@ -94,13 +97,16 @@ const PropertyPage = async ({
         {/* Top Section: Calendar and Bookings */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <BookingCalendar />
+
           <RecentBookings reservations={reservation} />
         </div>
 
         {/* Bottom Section: Image Management */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ImageUpload bucketName={name} />
-          <PhotoGallery images={images} error={error} bucketName={name} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <PhotoGallery images={images} error={error} bucketName={name} />
+          </Suspense>
         </div>
       </div>
     </main>

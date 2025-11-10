@@ -16,9 +16,8 @@ const Layout = async ({ children }: { children: ReactNode }) => {
         >
           <PanelSidebar variant="inset" />
           <SidebarInset>
-            <Suspense fallback={<div>Loading...</div>}>
-              <PanelSiteHeader />
-            </Suspense>
+            <PanelSiteHeader />
+
             {children}
           </SidebarInset>
         </SidebarProvider>
