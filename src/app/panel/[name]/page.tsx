@@ -87,8 +87,6 @@ const PropertyPage = async ({
 }) => {
   const { name } = await params;
 
-  const { images, error } = await getAllImagesFromBucket(name);
-
   // TODO:logika pobrania rezerwacji
 
   return (
@@ -97,16 +95,13 @@ const PropertyPage = async ({
         {/* Top Section: Calendar and Bookings */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <BookingCalendar />
-
           <RecentBookings reservations={reservation} />
         </div>
 
         {/* Bottom Section: Image Management */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ImageUpload bucketName={name} />
-          <Suspense fallback={<div>Loading...</div>}>
-            <PhotoGallery images={images} error={error} bucketName={name} />
-          </Suspense>
+          <PhotoGallery bucketName={name} />
         </div>
       </div>
     </main>
