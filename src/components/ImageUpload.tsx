@@ -14,6 +14,7 @@ import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type Prop = {
   bucketName: string;
@@ -23,10 +24,11 @@ const maxSizeMB = 3;
 const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 const maxFiles = 6;
 
-// TODO: Zmienić język wyświetlanego błędu, przy przekroczeniu 6 zdjęć
+// TODO:
 
 const ImageUpload = ({ bucketName }: Prop) => {
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const [
     { files, isDragging, errors },
@@ -51,7 +53,7 @@ const ImageUpload = ({ bucketName }: Prop) => {
     const formData = new FormData();
     if (files.length === 0) return;
 
-    // Dodaje pliki
+    // Dodaje pliki do formData
     files.forEach(({ file }) => formData.append("files", file as File));
 
     // Dodaje nazwe obiektu/property = bucket w supabase
@@ -73,7 +75,7 @@ const ImageUpload = ({ bucketName }: Prop) => {
       const data = await res.json();
       console.log(data);
       clearFiles();
-      // revalidatePath(`/panel/${propertyName}`);
+      router.refresh();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Nieznany błąd.";
@@ -116,7 +118,7 @@ const ImageUpload = ({ bucketName }: Prop) => {
                 <ImageIcon className="size-4 opacity-60" />
               </div>
               <p className="mb-1.5 text-sm font-medium">
-                Drop your images here
+                Upuść tutaj swoje obrazy
               </p>
               <p className="text-muted-foreground text-xs">
                 SVG, PNG, JPG or GIF (max. {maxSizeMB}MB)
@@ -127,7 +129,7 @@ const ImageUpload = ({ bucketName }: Prop) => {
                 onClick={openFileDialog}
               >
                 <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />
-                Select images
+                Wybierz obrazy
               </Button>
             </div>
           </div>
@@ -184,7 +186,7 @@ const ImageUpload = ({ bucketName }: Prop) => {
               {files.length > 1 && (
                 <div>
                   <Button size="sm" variant="outline" onClick={clearFiles}>
-                    Remove all files
+                    Usuń wszystkie pliki
                   </Button>
                 </div>
               )}

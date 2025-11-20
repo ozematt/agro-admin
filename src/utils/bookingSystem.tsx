@@ -17,6 +17,8 @@ interface UseRezerwacjeReturn {
   czyDostepny: (pokoj: string, start: Date, koniec: Date) => boolean;
 }
 
+// TODO: POPRAWIĆ NA ANGIELSKI
+
 function useRezerwacje(): UseRezerwacjeReturn {
   const [rezerwacje, setRezerwacje] = useState<MapaRezerwacji>({});
 

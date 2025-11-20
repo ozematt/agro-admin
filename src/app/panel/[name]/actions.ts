@@ -2,13 +2,16 @@
 
 import { reservationDialogSchema } from "@/lib/schemas";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { refresh, revalidateTag } from "next/cache";
+
+const supabase = createAdminClient();
+
+// NOTE: Nie używamy bibliotek klienckich (toast)
 
 type State = {
   error?: Record<string, string[]>;
   success?: string;
 };
-
-const supabase = createAdminClient();
 
 export async function submitForm(
   prevState: State,
@@ -36,45 +39,19 @@ export async function submitForm(
   return { success: "dane wysłane" };
 }
 
-export async function getAllImagesFromBucket(bucketName: string) {
-  // const {name} = await bucketName
-  try {
-    const { data: files, error } = await supabase.storage
-      .from(bucketName)
-      .list("images", {
-        limit: 1000,
-        offset: 0,
-        sortBy: { column: "created_at", order: "desc" },
-      });
+export async function deleteImageFromBucket(formData: FormData) {
+  const bucketName = formData.get("bucket") as string;
+  const path = formData.get("path") as string;
 
-    if (error) throw error;
+  const { error } = await supabase.storage.from(bucketName).remove([path]);
 
-    const images = files
-      .filter((file) => !file.name.endsWith(".emptyFolderPlaceholder"))
-      .map((file) => {
-        const filepath = "images/" + `${file.name}`;
-        const { data: urlData } = supabase.storage
-          .from(bucketName)
-          .getPublicUrl(filepath);
-
-        return {
-          name: file.name,
-          url: urlData.publicUrl,
-          path: filepath,
-          size: file.metadata?.size || 0,
-          createdAt: file.created_at,
-          id: file.id,
-        };
-      });
-
-    return { success: true, images };
-  } catch (error) {
-    return {
-      success: false,
-      images: [],
-      error: error instanceof Error ? error.message : "Nieznany błąd",
-    };
+  if (error) {
+    return { success: false, message: "Błąd serwera: " + error.message };
   }
+
+  revalidateTag(`images-${bucketName}`, "max");
+  refresh();
+  return { success: true, message: "Plik został usunięty" };
 }
 
 // obliczanie miejsca we wiadrze:

@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import { PanelSidebar, PanelSiteHeader } from "@/components";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 

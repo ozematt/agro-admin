@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteImageFromBucket } from "@/app/panel/[name]/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type Prop = {
   imagePath: string;
@@ -21,47 +22,44 @@ type Prop = {
 };
 
 const ImageRemoveAlert = ({ imagePath, bucketName }: Prop) => {
-  const router = useRouter();
+  const handleImageDelete = async () => {
+    const formData = new FormData();
+    formData.append("bucket", bucketName);
+    formData.append("path", imagePath);
 
-  async function handleDelete(bucket: string, path: string) {
-    const res = await fetch("/api/image/remove", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bucket, path }),
-    });
+    const result = await deleteImageFromBucket(formData);
 
-    if (res.ok) {
-      console.log("Plik usunięty");
-      router.refresh();
-    } else console.error("Błąd:", await res.json());
-  }
+    if (result.success) {
+      toast.success("Plik został usunięty pomyślnie.");
+    } else {
+      toast.error(
+        result.message || "Wystąpił nieznany błąd podczas usuwania pliku.",
+      );
+    }
+  };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="destructive"
-          size="icon"
-          className="h-8 w-8"
-          // onClick={() => handleDelete(bucketName, image.path)}
-        >
+        <Button variant="destructive" size="icon" className="h-8 w-8">
           <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Czy na pewno chcesz usunąć to zdjęcie?
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Take a moment to review the details provided to ensure you
-            understand the implications.
+            Ten plik graficzny zostanie trwale usunięty z Twojej galerii. Tej
+            operacji nie będzie można cofnąć. Upewnij się, że na pewno chcesz
+            kontynuować.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => handleDelete(bucketName, imagePath)}
-          >
-            Okay
+          <AlertDialogCancel>Anuluj</AlertDialogCancel>
+          <AlertDialogAction onClick={handleImageDelete}>
+            Tak, usuń
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

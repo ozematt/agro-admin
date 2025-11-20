@@ -6,8 +6,6 @@ import {
   BookingCalendar,
   RecentBookings,
 } from "@/components";
-import { getAllImagesFromBucket } from "./actions";
-import { Suspense } from "react";
 
 type Reservation = {
   id: string;
