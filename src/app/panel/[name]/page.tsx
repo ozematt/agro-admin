@@ -1,11 +1,13 @@
 "use cache";
 
 import {
-  PhotoGallery,
+  Gallery,
   ImageUpload,
   BookingCalendar,
   RecentBookings,
 } from "@/components";
+import { GallerySkeleton } from "@/components/skeletons";
+import { Suspense } from "react";
 
 type Reservation = {
   id: string;
@@ -99,7 +101,9 @@ const PropertyPage = async ({
         {/* Bottom Section: Image Management */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ImageUpload bucketName={name} />
-          <PhotoGallery bucketName={name} />
+          <Suspense fallback={<GallerySkeleton />}>
+            <Gallery bucketName={name} />
+          </Suspense>
         </div>
       </div>
     </main>

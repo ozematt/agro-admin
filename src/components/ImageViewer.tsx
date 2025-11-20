@@ -1,19 +1,11 @@
 "use client";
 
-import {
-  MouseEventHandler,
-  Suspense,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
-// import { useSwipeable } from "react-swipeable";
-
 import { Button } from "./ui/button";
-import { ChevronLeft, ChevronRight, Trash, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import ImageRemoveAlert from "./ImageRemoveAlert";
+import { Skeleton } from "./ui/skeleton";
 
 type GalleryImage = {
   title: string;
@@ -24,13 +16,14 @@ type GalleryImage = {
   id: string;
 };
 
-type WrapperProp = {
+type Props = {
   bucketName: string;
   images: GalleryImage[];
-  // onClick?: () => void;
 };
 
-const ImageViewer = ({ images, bucketName }: WrapperProp) => {
+// TODO: poprawic położenie przycisku do usuwania zdjęcia
+
+const ImageViewer = ({ images, bucketName }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
@@ -38,23 +31,6 @@ const ImageViewer = ({ images, bucketName }: WrapperProp) => {
   const currentImage = images[currentIndex];
   const hasNext = currentIndex < images.length - 1;
   const hasPrev = currentIndex > 0;
-
-  // Preload adjacent images for performance
-  // useEffect(() => {
-  //   if (!isOpen) return;
-
-  //   const preloadImage = (src: string) => {
-  //     const img = new window.Image();
-  //     img.src = src;
-  //   };
-
-  //   if (hasNext) {
-  //     preloadImage(images[currentIndex + 1].src);
-  //   }
-  //   if (hasPrev) {
-  //     preloadImage(images[currentIndex - 1].src);
-  //   }
-  // }, [currentIndex, isOpen, hasNext, hasPrev, images]);
 
   const goToNext = () => {
     if (hasNext) {
@@ -87,38 +63,10 @@ const ImageViewer = ({ images, bucketName }: WrapperProp) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, goToNext, goToPrev]);
 
-  // Swipe gesture handlers
-  // const swipeHandlers = useSwipeable({
-  //   onSwipedLeft: goToNext,
-  //   onSwipedRight: goToPrev,
-  //   trackMouse: true,
-  //   preventScrollOnSwipe: true,
-  // });
-
   const openModal = (index: number) => {
     setCurrentIndex(index);
     setImageError(false);
     setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
-  const handleDelete = () => {
-    const imageId = currentImage.id;
-    // if (imageId && onDelete) {
-    // onDelete(imageId)
-    closeModal();
-    // }
-  };
-
-  const handleSetMain = () => {
-    const imageId = currentImage.id;
-    // if (imageId && onSetMain) {
-    // onSetMain(imageId)
-    closeModal();
-    // }
   };
 
   return (
@@ -223,16 +171,7 @@ const ImageViewer = ({ images, bucketName }: WrapperProp) => {
           )}
 
           {/* Action Buttons */}
-
           <div className="absolute bottom-22 left-1/2 z-50 -translate-x-1/2">
-            {/* <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleSetMain}
-                className="bg-white/90 text-black hover:bg-white"
-              >
-                Set as Main
-              </Button> */}
             <div onClick={(e) => e.stopPropagation()}>
               <ImageRemoveAlert
                 imagePath={currentImage.path}
@@ -248,7 +187,15 @@ const ImageViewer = ({ images, bucketName }: WrapperProp) => {
 
 export default ImageViewer;
 
-// NOTE: skeleton for six images
+// export const ImageViewerWrapper = ({ images, bucketName }) => {
+//   return (
+//     <Suspense fallback={<ImagesSkeleton />}>
+//       <ImageViewer images={images} bucketName={bucketName} />
+//     </Suspense>
+//   );
+// };
+
+// // NOTE: skeleton for six images
 // const ImagesSkeleton = () => {
 //   const array = Array.from({ length: 6 }).map((_, index) => index + 1);
 

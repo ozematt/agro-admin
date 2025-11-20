@@ -9,7 +9,7 @@ export { default as StatusBadge } from "./StatusBadge";
 export { default as AddReservationDialog } from "./AddReservationDialog";
 export { default as DatePicker } from "./DatePicker";
 export { default as ImageRemoveAlert } from "./ImageRemoveAlert";
-export { default as PhotoGallery } from "./PhotoGallery";
+export { default as Gallery } from "./Gallery";
 export { default as ImageUpload } from "./ImageUpload";
 export { default as BookingCalendar } from "./BookingCalendar";
 export { default as RecentBookings } from "./RecentBookings";
