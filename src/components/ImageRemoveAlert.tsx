@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteImageFromBucket } from "@/app/panel/[name]/actions";
+import { deleteImageFromBucket } from "@/app/panel/[slug]/actions";
 import {
   AlertDialog,
   AlertDialogAction,

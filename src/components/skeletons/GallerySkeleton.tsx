@@ -14,12 +14,8 @@ const GallerySkeleton = () => {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Skeleton className="h-3 w-full max-w-20" />
-          </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-3 w-full max-w-30" />
-          </CardDescription>
+          <CardTitle>Galeria zdjęć</CardTitle>
+          <CardDescription>Zarządzaj zdjęciami swojego obiektu</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">

@@ -1,9 +1,14 @@
 import { createAdminClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/client";
 
-const supabase = createAdminClient();
+//
+
+// TODO: Function for reservation feaching
 
 // NOTE: Functions for images fetching from supabase bucket
 export async function getAllImagesFromBucket(bucketName: string) {
+  const supabase = createAdminClient();
+
   try {
     const { data: files, error } = await supabase.storage
       .from(bucketName)
@@ -40,6 +45,50 @@ export async function getAllImagesFromBucket(bucketName: string) {
     return {
       success: false,
       images: [],
+      error: error instanceof Error ? error.message : "Nieznany błąd",
+    };
+  }
+}
+
+// nazwa domku/property
+export async function getReservation(propertyName: string) {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from("reservation")
+      .select(`*, guest_id(id, first_name, last_name)`)
+      .eq("property", propertyName);
+
+    if (error) {
+      throw new Error(`Błąd Supabase: ${error.message}`);
+    }
+    return { success: true, reservations: data, error: undefined };
+  } catch (error) {
+    return {
+      success: false,
+      reservation: [],
+      error: error instanceof Error ? error.message : "Nieznany błąd",
+    };
+  }
+}
+
+export async function getGuestsInfo(guestsId: number) {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from("guests")
+      .select()
+      .eq("id", guestsId);
+
+    if (error) {
+      throw new Error(`Błąd Supabase: ${error.message}`);
+    }
+
+    return { success: true, guestsInfo: data, error: undefined };
+  } catch (error) {
+    return {
+      success: false,
+      guestsInfo: [],
       error: error instanceof Error ? error.message : "Nieznany błąd",
     };
   }

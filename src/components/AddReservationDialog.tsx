@@ -17,7 +17,7 @@ import { Building, Building2, House, Plus } from "lucide-react";
 import { DatePicker } from "@/components";
 import { usePathname } from "next/navigation";
 import { useActionState } from "react";
-import { submitForm } from "@/app/panel/[name]/actions";
+import { submitForm } from "@/app/panel/[slug]/actions";
 
 const PROPERTIES = [
   {

@@ -11,7 +11,6 @@ import { getAllImagesFromBucket } from "@/lib/data";
 import toast from "react-hot-toast";
 import { cacheTag } from "next/cache";
 import ImageViewer from "./ImageViewer";
-import { Skeleton } from "./ui/skeleton";
 
 type Prop = { bucketName: string };
 
@@ -47,16 +46,3 @@ const Gallery = async ({ bucketName }: Prop) => {
 };
 
 export default Gallery;
-
-// NOTE: skeleton for six images
-const ImagesSkeleton = () => {
-  const array = Array.from({ length: 6 }).map((_, index) => index + 1);
-
-  return (
-    <div className="grid aspect-square grid-cols-2 gap-4 sm:grid-cols-3">
-      {array.map((el) => (
-        <Skeleton key={el} className="h-45 max-w-45" />
-      ))}
-    </div>
-  );
-};
