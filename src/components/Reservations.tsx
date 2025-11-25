@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getReservation } from "@/lib/data";
+import { getReservation, getReservationDetails } from "@/lib/data";
 import { ReservationViewer } from "@/components";
 import { cacheLife, cacheTag } from "next/cache";
 

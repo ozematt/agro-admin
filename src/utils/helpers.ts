@@ -16,7 +16,7 @@ export const createSlug = (text: string): string => {
 };
 
 // Tworzenie tytułu ze sluga
-export const createTitle = (url: string) => {
+export const createTitle = (url: string): string => {
   return url.split("/")[2]
     ? (url.split("/")[2].charAt(0).toUpperCase() + url.split("/")[2].slice(1))
         .split("-")
@@ -25,7 +25,10 @@ export const createTitle = (url: string) => {
 };
 
 // Tworzenie przedziału dat
-export const formatDateRange = (startDateStr: string, endDateStr: string) => {
+export const formatDateRange = (
+  startDateStr: string,
+  endDateStr: string,
+): string => {
   const start = new Date(`${startDateStr}T00:00:00`);
   const end = new Date(`${endDateStr}T00:00:00`);
 
@@ -56,7 +59,7 @@ export const formatDateRange = (startDateStr: string, endDateStr: string) => {
 };
 
 // Tworzenie numeru rezerwacji
-export const createReservationNumber = (startDate: string) => {
+export const createReservationNumber = (startDate: string): string => {
   const date = new Date(`${startDate}T00:00:00`);
 
   const year = date.getFullYear();
@@ -64,4 +67,36 @@ export const createReservationNumber = (startDate: string) => {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `#R${year}-${month}${day}`;
+};
+
+export const formatCreatedAt = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  const datePart = new Intl.DateTimeFormat("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("pl-PL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  return `Utworzono: ${datePart}, ${timePart}`;
+};
+
+export const formatCheckInOut = (dateStr: string) => {
+  const datePart = new Intl.DateTimeFormat("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(dateStr));
+
+  const dayPart = new Intl.DateTimeFormat("pl-PL", {
+    weekday: "long",
+  }).format(new Date(dateStr));
+
+  return ` ${datePart}, ${dayPart}`;
 };

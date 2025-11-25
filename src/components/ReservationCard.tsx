@@ -1,3 +1,4 @@
+"use server";
 import { formatDateRange } from "@/utils/helpers";
 import { Reservation } from "./ReservationViewer";
 import { ReservationCardItem } from "@/components";

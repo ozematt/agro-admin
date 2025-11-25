@@ -35,15 +35,6 @@ const ReservationCardItem = ({
   const [isHovered, setIsHovered] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
 
-  const statusColors = {
-    oczekujący:
-      "dark:bg-chart-3/20 bg-chart-4/10 text-chart-4 dark:text-chart-3 border-chart-4 dark:border-chart-3",
-    potwierdzony:
-      "dark:bg-chart-2/20 bg-chart-2/10 text-chart-2 dark:text-chart-2 border-chart-2 dark:border-chart-2",
-    odrzucony:
-      "dark:bg-destructive/20 bg-destructive/10 text-destructive dark:text-destructive border-destructive dark:border-destructive",
-  };
-
   return (
     <div
       className={cn(
@@ -69,9 +60,9 @@ const ReservationCardItem = ({
             <span
               className={cn(
                 "rounded-full border px-3 py-1 text-xs font-medium",
-                status === "oczekujący" && statusColors.oczekujący,
-                status === "potwierdzony" && statusColors.potwierdzony,
-                status === "odrzucony" && statusColors.odrzucony,
+                status === "oczekujący" && "badge-pending",
+                status === "potwierdzony" && "badge-confirmed",
+                status === "odrzucony" && "badge-rejected",
               )}
             >
               {status}
@@ -155,7 +146,7 @@ const ReservationCardItem = ({
             onClick={() => setOpenDetails(false)}
           />
           <div className="relative z-10">
-            <ReservationDetailsCard />
+            <ReservationDetailsCard reservationId={reservationId} />
           </div>
         </div>
       )}

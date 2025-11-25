@@ -95,6 +95,28 @@ export async function getPropertyId(propertyName: string) {
   }
 }
 
+export async function getReservationDetails(reservationId: number) {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from("reservation")
+      .select(`*, property_id(*), guest_id(*)`)
+      .eq("id", reservationId);
+
+    if (error) {
+      throw new Error(`Błąd Supabase: ${error.message}`);
+    }
+
+    return { success: true, reservationDetails: data, error: undefined };
+  } catch (error) {
+    return {
+      success: false,
+      reservationDetails: [],
+      error: error instanceof Error ? error.message : "Nieznany błąd",
+    };
+  }
+}
+
 // export async function getGuestsInfo(guestsId: number) {
 //   const supabase = createClient();
 //   try {

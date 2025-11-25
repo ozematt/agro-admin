@@ -1,18 +1,16 @@
+"use client";
+
 import {
   Calendar,
   Users,
   Mail,
   Phone,
   MapPin,
-  CreditCard,
   MessageSquare,
   Clock,
-  DollarSign,
   Home,
   Check,
   X,
-  ChevronLeft,
-  Edit,
   MoreVertical,
   Bed,
   Wifi,
@@ -32,9 +30,110 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import { Alert, AlertDescription } from '@/components/ui/alert';
+import { cn } from "@/lib/utils";
+import { getReservationDetails } from "@/lib/data";
+import { useEffect, useState } from "react";
+import { formatCheckInOut, formatCreatedAt } from "@/utils/helpers";
 
-const ReservationDetailsCard = () => {
+type Prop = { reservationId: number };
+
+type Guest = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: number | string;
+  created_at: string;
+};
+
+type Property = {
+  id: number;
+  name: string;
+  beds: number;
+  price_per_night: number;
+  facilities: string[];
+  created_at: string;
+};
+
+type ReservationDetails = {
+  check_in: string;
+  check_out: string;
+  created_at: string;
+  guest_id: Guest;
+  property_id: Property;
+  guests: number;
+  nights: number;
+  notes: string | null;
+  reservation_number: string;
+  status: "oczekujący" | "potwierdzony" | "odrzucony" | string;
+};
+
+type ReservationResponse = {
+  success: boolean;
+  error: string | undefined;
+  reservationDetails: ReservationDetails[];
+};
+
+const initialState = {
+  success: false,
+  error: undefined,
+  reservationDetails: [
+    {
+      check_in: "",
+      check_out: "",
+      created_at: "",
+      guest_id: {
+        id: 0,
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        created_at: "",
+      },
+      guests: 0,
+      nights: 0,
+      notes: "",
+      property_id: {
+        id: 0,
+        name: "",
+        beds: 0,
+        price_per_night: 0,
+        facilities: [],
+        created_at: "",
+      },
+      reservation_number: "",
+      status: "oczekujący",
+    },
+  ],
+};
+
+const ReservationDetailsCard = ({ reservationId }: Prop) => {
+  const [reservationDetails, setReservationDetails] =
+    useState<ReservationResponse>(initialState);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const res = await getReservationDetails(reservationId);
+      if (!res) return;
+      setReservationDetails(res);
+    };
+
+    fetchDetails();
+  }, [reservationId]);
+
+  if (!reservationDetails.success) return;
+  const {
+    status,
+    check_in,
+    check_out,
+    guests,
+    nights,
+    created_at,
+    reservation_number,
+    guest_id: { first_name, last_name, email, phone },
+    property_id: { name, beds, price_per_night, facilities },
+  } = reservationDetails.reservationDetails[0];
+
   return (
     <div className="h-screen max-h-[90vh] max-w-5xl overflow-y-auto">
       <div className="grid gap-6 lg:grid-cols-3">
@@ -43,23 +142,38 @@ const ReservationDetailsCard = () => {
           {/* Główna karta z statusem */}
           <Card>
             {/* Header z statusem */}
-            <CardHeader className="bg-gradient-to-r from-amber-500/10 to-transparent">
+            <CardHeader className="relative">
+              <div
+                className={cn(
+                  "absolute -top-6 left-0 h-25 w-full rounded-t-xl bg-gradient-to-r to-transparent",
+                  status === "oczekujący" &&
+                    "from-chart-4/10 dark:from-chart-3/20",
+                  status === "potwierdzony" &&
+                    "dark:from-chart-2/20 from-chart-2/10",
+                  status === "odrzucony" &&
+                    "dark:from-destructive/20 from-destructive/10",
+                )}
+              />
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="mb-2 flex items-center gap-3">
                     <CardTitle className="text-2xl">
-                      Rezerwacja #R2025-1121
+                      Rezerwacja {reservation_number}
                     </CardTitle>
                     <Badge
                       variant="outline"
-                      className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                      className={cn(
+                        status === "oczekujący" && "badge-pending",
+                        status === "potwierdzony" && "badge-confirmed",
+                        status === "odrzucony" && "badge-rejected",
+                      )}
                     >
-                      Oczekujący
+                      {status}
                     </Badge>
                   </div>
                   <CardDescription className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    Utworzono: 18 listopada 2025, 14:32
+                    {formatCreatedAt(created_at)}
                   </CardDescription>
                 </div>
                 <Button variant="ghost" size="icon">
@@ -74,19 +188,19 @@ const ReservationDetailsCard = () => {
                 <TabsList className="h-auto w-full justify-start bg-transparent p-0">
                   <TabsTrigger
                     value="info"
-                    className="data-[state=active]:border-primary rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                    className="data-[state=active]:border-b-primary dark:data-[state=active]:border-b-primary cursor-pointer rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:shadow-none dark:border-none"
                   >
                     Informacje
                   </TabsTrigger>
                   <TabsTrigger
                     value="guest"
-                    className="data-[state=active]:border-primary rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                    className="data-[state=active]:border-b-primary dark:data-[state=active]:border-b-primary cursor-pointer rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:shadow-none dark:border-none"
                   >
                     Gość
                   </TabsTrigger>
                   <TabsTrigger
                     value="notes"
-                    className="data-[state=active]:border-primary rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                    className="data-[state=active]:border-b-primary dark:data-[state=active]:border-b-primary cursor-pointer rounded-none px-4 py-4 data-[state=active]:border-b-2 data-[state=active]:shadow-none dark:border-none"
                   >
                     Notatki
                   </TabsTrigger>
@@ -107,7 +221,7 @@ const ReservationDetailsCard = () => {
                         <div>
                           <div className="font-medium">Check-in</div>
                           <div className="text-muted-foreground text-sm">
-                            21 listopada 2025, piątek
+                            {formatCheckInOut(check_in)}
                           </div>
                           <div className="text-muted-foreground mt-1 text-xs">
                             Po godzinie 15:00
@@ -119,7 +233,7 @@ const ReservationDetailsCard = () => {
                         <div>
                           <div className="font-medium">Check-out</div>
                           <div className="text-muted-foreground text-sm">
-                            23 listopada 2025, niedziela
+                            {formatCheckInOut(check_out)}
                           </div>
                           <div className="text-muted-foreground mt-1 text-xs">
                             Do godziny 11:00
@@ -131,7 +245,7 @@ const ReservationDetailsCard = () => {
                         <span className="text-muted-foreground">
                           Długość pobytu
                         </span>
-                        <span className="font-medium">2 noce</span>
+                        <span className="font-medium">{nights} noce</span>
                       </div>
                     </div>
                   </div>
@@ -144,9 +258,9 @@ const ReservationDetailsCard = () => {
                       <div className="flex items-start gap-3">
                         <Users className="text-muted-foreground mt-0.5 h-5 w-5" />
                         <div>
-                          <div className="font-medium">4 osoby</div>
+                          <div className="font-medium">{guests} osoby</div>
                           <div className="text-muted-foreground text-sm">
-                            2 dorosłych, 2 dzieci
+                            2 dorosłych, 2 dzieci ?
                           </div>
                         </div>
                       </div>
@@ -183,15 +297,14 @@ const ReservationDetailsCard = () => {
                           <Home className="text-muted-foreground h-8 w-8" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="mb-1 text-lg font-semibold">
-                            Apartament Rodzinny
-                          </h4>
+                          <h4 className="mb-1 text-lg font-semibold">{name}</h4>
                           <p className="text-muted-foreground mb-3 text-sm">
                             Przestronny apartament z widokiem na góry
                           </p>
                           <div className="flex flex-wrap gap-3">
                             <Badge variant="secondary" className="gap-1.5">
-                              <Bed className="h-3 w-3" />2 sypialnie
+                              <Bed className="h-3 w-3" />
+                              {beds}sypialnie
                             </Badge>
                             <Badge variant="secondary" className="gap-1.5">
                               <Wifi className="h-3 w-3" />
@@ -211,51 +324,18 @@ const ReservationDetailsCard = () => {
                     </CardContent>
                   </Card>
                 </div>
-
-                <Separator />
-
-                {/* Dodatki */}
-                <div>
-                  <h3 className="text-muted-foreground mb-4 text-sm font-semibold tracking-wide uppercase">
-                    Dodatkowe usługi
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between py-2">
-                      <span className="text-sm">
-                        Śniadanie (4 osoby × 2 dni)
-                      </span>
-                      <span className="font-medium">240 PLN</span>
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                      <span className="text-sm">Parking</span>
-                      <span className="font-medium">40 PLN</span>
-                    </div>
-                  </div>
-                </div>
               </TabsContent>
 
               {/* Zawartość - Gość */}
               <TabsContent value="guest" className="mt-0 space-y-6 p-6">
-                <div className="flex items-start gap-4">
+                <div className="flex items-center gap-4">
                   <Avatar className="h-20 w-20">
                     <AvatarFallback className="text-2xl">JN</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <h2 className="mb-1 text-2xl font-bold">Jan Nowak</h2>
-                    <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
-                      <Badge
-                        variant="outline"
-                        className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                      >
-                        Zweryfikowany
-                      </Badge>
-                      <span>•</span>
-                      <span>5 poprzednich pobytów</span>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-5 w-5" />
-                  </Button>
+
+                  <h2 className="mb-1 text-2xl font-bold">
+                    {first_name} {last_name}
+                  </h2>
                 </div>
 
                 <Separator />
@@ -271,14 +351,14 @@ const ReservationDetailsCard = () => {
                         className="text-foreground h-auto justify-start gap-3 p-0"
                       >
                         <Mail className="text-muted-foreground h-5 w-5" />
-                        jan.nowak@example.com
+                        {email}
                       </Button>
                       <Button
                         variant="link"
                         className="text-foreground h-auto justify-start gap-3 p-0"
                       >
                         <Phone className="text-muted-foreground h-5 w-5" />
-                        +48 123 456 789
+                        {phone}
                       </Button>
                     </div>
                   </div>
@@ -296,20 +376,6 @@ const ReservationDetailsCard = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h3 className="text-muted-foreground mb-4 text-sm font-semibold tracking-wide uppercase">
-                    Preferencje
-                  </h3>
-                  {/* <Alert>
-                      <AlertDescription>
-                        Preferuje pokoje na wyższych piętrach z widokiem. Alergik na orzechy. 
-                        Potrzebuje łóżeczka dziecięcego.
-                      </AlertDescription>
-                    </Alert> */}
                 </div>
               </TabsContent>
 
@@ -375,52 +441,6 @@ const ReservationDetailsCard = () => {
 
         {/* Prawa kolumna - Podsumowanie */}
         <div className="space-y-6">
-          {/* Płatność */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <DollarSign className="h-4 w-4" />
-                Płatność
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  Cena pokoju (2 noce)
-                </span>
-                <span>1,200 PLN</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Dodatkowe usługi</span>
-                <span>280 PLN</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Opłata serwisowa</span>
-                <span>100 PLN</span>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold">Razem</span>
-                <span className="text-xl font-bold">1,580 PLN</span>
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-2">
-                <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                  <CreditCard className="h-4 w-4" />
-                  <span>Status płatności</span>
-                </div>
-                <Badge
-                  variant="outline"
-                  className="border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                >
-                  Oczekuje na wpłatę
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Akcje */}
           <Card>
             <CardHeader>
@@ -439,40 +459,6 @@ const ReservationDetailsCard = () => {
                 <X className="h-4 w-4" />
                 Odrzuć rezerwację
               </Button>
-            </CardContent>
-          </Card>
-
-          {/* Historia */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Clock className="h-4 w-4" />
-                Historia
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-3">
-                <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-amber-500" />
-                <div>
-                  <div className="text-sm font-medium">
-                    Rezerwacja utworzona
-                  </div>
-                  <div className="text-muted-foreground text-xs">
-                    18 lis 2025, 14:32
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <div className="bg-muted mt-2 h-2 w-2 flex-shrink-0 rounded-full" />
-                <div>
-                  <div className="text-sm font-medium">
-                    Email potwierdzenia wysłany
-                  </div>
-                  <div className="text-muted-foreground text-xs">
-                    18 lis 2025, 14:33
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
