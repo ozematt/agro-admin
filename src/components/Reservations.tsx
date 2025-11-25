@@ -10,13 +10,13 @@ import {
 import { getReservation } from "@/lib/data";
 import { ReservationViewer } from "@/components";
 import { cacheLife, cacheTag } from "next/cache";
-import { createReservationNumber } from "@/utils/helpers";
 
 type Prop = {
   slug: string;
 };
 
 const Reservations = async ({ slug }: Prop) => {
+  // NOTE: przyda mi się prze dodaniu nowej rezerwacji
   "use cache";
   const { reservations, error } = await getReservation(slug);
   cacheTag(`reservation-${slug}`);

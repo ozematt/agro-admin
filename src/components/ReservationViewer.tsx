@@ -12,7 +12,8 @@ export type Reservation = {
   nights: number;
   status: "oczekujący" | "potwierdzony" | "odrzucony";
   guests: number;
-  proprty: string;
+  property: string;
+  reservation_number: string;
   created_at?: string;
 };
 

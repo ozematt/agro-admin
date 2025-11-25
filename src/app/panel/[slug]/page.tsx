@@ -19,7 +19,7 @@ const PropertyPage = async ({
     <main className="container mx-auto max-w-7xl px-4 py-8">
       <div className="space-y-8">
         {/* Top Section: Calendar and Bookings */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <BookingCalendar />
           <Suspense key={slug} fallback={<ReservationSkeleton />}>
             <Reservations slug={slug} />

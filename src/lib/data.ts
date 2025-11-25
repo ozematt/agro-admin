@@ -54,10 +54,16 @@ export async function getAllImagesFromBucket(bucketName: string) {
 export async function getReservation(propertyName: string) {
   const supabase = createClient();
   try {
+    const propertyId = await getPropertyId(propertyName);
+
+    if (propertyId.error) {
+      throw new Error("Nie ma tekiego obiektu.");
+    }
+
     const { data, error } = await supabase
       .from("reservation")
       .select(`*, guest_id(id, first_name, last_name)`)
-      .eq("property", propertyName);
+      .eq("property_id", propertyId.propertyId[0].id);
 
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
@@ -72,24 +78,41 @@ export async function getReservation(propertyName: string) {
   }
 }
 
-export async function getGuestsInfo(guestsId: number) {
+export async function getPropertyId(propertyName: string) {
   const supabase = createClient();
   try {
     const { data, error } = await supabase
-      .from("guests")
-      .select()
-      .eq("id", guestsId);
-
+      .from("property")
+      .select("id")
+      .eq("name", propertyName);
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
     }
 
-    return { success: true, guestsInfo: data, error: undefined };
+    return { success: true, propertyId: data, error: undefined };
   } catch (error) {
-    return {
-      success: false,
-      guestsInfo: [],
-      error: error instanceof Error ? error.message : "Nieznany błąd",
-    };
+    throw error;
   }
 }
+
+// export async function getGuestsInfo(guestsId: number) {
+//   const supabase = createClient();
+//   try {
+//     const { data, error } = await supabase
+//       .from("guests")
+//       .select()
+//       .eq("id", guestsId);
+
+//     if (error) {
+//       throw new Error(`Błąd Supabase: ${error.message}`);
+//     }
+
+//     return { success: true, guestsInfo: data, error: undefined };
+//   } catch (error) {
+//     return {
+//       success: false,
+//       guestsInfo: [],
+//       error: error instanceof Error ? error.message : "Nieznany błąd",
+//     };
+//   }
+// }

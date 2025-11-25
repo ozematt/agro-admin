@@ -17,3 +17,5 @@ export { default as PanelSidebar } from "./PanelSidebar";
 export { default as PanelSiteHeader } from "./PanelSiteHeader";
 export { default as ReservationViewer } from "./ReservationViewer";
 export { default as ReservationCard } from "./ReservationCard";
+export { default as ReservationDetailsCard } from "./ReservationDetailsCard";
+export { default as ReservationCardItem } from "./ReservationCardItem";
