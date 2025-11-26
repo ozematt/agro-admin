@@ -1,20 +1,35 @@
 import ReservationCard from "./ReservationCard";
 
+type Guest = {
+  id: number;
+  created_at: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: number | string;
+};
+
+type Property = {
+  id: number;
+  created_at: string;
+  name: string;
+  price_per_night: number;
+  beds: number;
+  facilities: string[];
+};
+
 export type Reservation = {
   id: number;
-  guest_id: {
-    id: number;
-    first_name: string;
-    last_name: string;
-  };
+  created_at: string;
+  reservation_number: string;
   check_in: string;
   check_out: string;
   nights: number;
-  status: "oczekujący" | "potwierdzony" | "odrzucony";
+  status: "oczekujący" | "potwierdzony" | "odrzucony" | string;
   guests: number;
-  property: string;
-  reservation_number: string;
-  created_at?: string;
+  guest_id: Guest;
+  notes: string | null;
+  property_id: Property;
 };
 
 type Prop = {

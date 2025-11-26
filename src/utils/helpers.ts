@@ -24,51 +24,41 @@ export const createTitle = (url: string): string => {
     : "Panel";
 };
 
-// Tworzenie przedziału dat
+// Tworzenie daty: np. 29 lis - 30 lis 2025
 export const formatDateRange = (
   startDateStr: string,
   endDateStr: string,
 ): string => {
-  const start = new Date(`${startDateStr}T00:00:00`);
-  const end = new Date(`${endDateStr}T00:00:00`);
+  const start = new Date(startDateStr);
+  const end = new Date(endDateStr);
 
-  const monthNames = [
-    "sty",
-    "lut",
-    "mar",
-    "kwi",
-    "maj",
-    "cze",
-    "lip",
-    "sie",
-    "wrz",
-    "paź",
-    "lis",
-    "gru",
-  ];
+  const startDate = new Intl.DateTimeFormat("pl-PL", {
+    day: "numeric",
+    month: "short",
+  }).format(start);
 
-  const startDay = start.getDate();
-  const startMonth = monthNames[start.getMonth()];
+  const endDate = new Intl.DateTimeFormat("pl-PL", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(end);
 
-  const endDay = end.getDate();
-  const endMonth = monthNames[end.getMonth()];
-
-  const year = end.getFullYear();
-
-  return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`;
+  return `${startDate} - ${endDate}`;
 };
 
-// Tworzenie numeru rezerwacji
+// Tworzenie numeru rezerwacji: np. #R2025-113010
 export const createReservationNumber = (startDate: string): string => {
   const date = new Date(`${startDate}T00:00:00`);
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
+  const randomNumber = Math.floor(Math.random() * 10) + 1;
 
-  return `#R${year}-${month}${day}`;
+  return `#R${year}-${month}${day}${randomNumber}`;
 };
 
+// Tworzenie daty: np. "Utworzono 21 listopada 2025, 14:40"
 export const formatCreatedAt = (dateString: string): string => {
   const date = new Date(dateString);
 
@@ -87,6 +77,7 @@ export const formatCreatedAt = (dateString: string): string => {
   return `Utworzono: ${datePart}, ${timePart}`;
 };
 
+//Tworzenie dat: np."29 listopada 2025, sobota"
 export const formatCheckInOut = (dateStr: string) => {
   const datePart = new Intl.DateTimeFormat("pl-PL", {
     day: "numeric",

@@ -31,97 +31,12 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { getReservationDetails } from "@/lib/data";
-import { useEffect, useState } from "react";
 import { formatCheckInOut, formatCreatedAt } from "@/utils/helpers";
+import { type Reservation } from "./ReservationViewer";
 
-type Prop = { reservationId: number };
+type Prop = { reservation: Reservation };
 
-type Guest = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: number | string;
-  created_at: string;
-};
-
-type Property = {
-  id: number;
-  name: string;
-  beds: number;
-  price_per_night: number;
-  facilities: string[];
-  created_at: string;
-};
-
-type ReservationDetails = {
-  check_in: string;
-  check_out: string;
-  created_at: string;
-  guest_id: Guest;
-  property_id: Property;
-  guests: number;
-  nights: number;
-  notes: string | null;
-  reservation_number: string;
-  status: "oczekujący" | "potwierdzony" | "odrzucony" | string;
-};
-
-type ReservationResponse = {
-  success: boolean;
-  error: string | undefined;
-  reservationDetails: ReservationDetails[];
-};
-
-const initialState = {
-  success: false,
-  error: undefined,
-  reservationDetails: [
-    {
-      check_in: "",
-      check_out: "",
-      created_at: "",
-      guest_id: {
-        id: 0,
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        created_at: "",
-      },
-      guests: 0,
-      nights: 0,
-      notes: "",
-      property_id: {
-        id: 0,
-        name: "",
-        beds: 0,
-        price_per_night: 0,
-        facilities: [],
-        created_at: "",
-      },
-      reservation_number: "",
-      status: "oczekujący",
-    },
-  ],
-};
-
-const ReservationDetailsCard = ({ reservationId }: Prop) => {
-  const [reservationDetails, setReservationDetails] =
-    useState<ReservationResponse>(initialState);
-
-  useEffect(() => {
-    const fetchDetails = async () => {
-      const res = await getReservationDetails(reservationId);
-      if (!res) return;
-      setReservationDetails(res);
-    };
-
-    fetchDetails();
-  }, [reservationId]);
-
-  if (!reservationDetails.success) return;
+const ReservationDetailsCard = ({ reservation }: Prop) => {
   const {
     status,
     check_in,
@@ -132,7 +47,7 @@ const ReservationDetailsCard = ({ reservationId }: Prop) => {
     reservation_number,
     guest_id: { first_name, last_name, email, phone },
     property_id: { name, beds, price_per_night, facilities },
-  } = reservationDetails.reservationDetails[0];
+  } = reservation;
 
   return (
     <div className="h-screen max-h-[90vh] max-w-5xl overflow-y-auto">

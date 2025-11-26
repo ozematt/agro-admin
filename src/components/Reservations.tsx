@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getReservation, getReservationDetails } from "@/lib/data";
+import { getReservation } from "@/lib/data";
 import { ReservationViewer } from "@/components";
 import { cacheLife, cacheTag } from "next/cache";
 
@@ -16,7 +16,7 @@ type Prop = {
 };
 
 const Reservations = async ({ slug }: Prop) => {
-  // NOTE: przyda mi się prze dodaniu nowej rezerwacji
+  // Pobieramy rezerwacje dla danego obiektu, cachujemy dane
   "use cache";
   const { reservations, error } = await getReservation(slug);
   cacheTag(`reservation-${slug}`);
