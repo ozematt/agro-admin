@@ -7,7 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function loginForm(
   _prevState: { error?: string } | null,
-  formData: FormData
+  formData: FormData,
 ) {
   const supabase = await createClient();
 

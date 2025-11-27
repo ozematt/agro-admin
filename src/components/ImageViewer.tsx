@@ -6,7 +6,6 @@ import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import ImageRemoveAlert from "./ImageRemoveAlert";
 
-
 type GalleryImage = {
   title: string;
   src: string;
@@ -32,21 +31,19 @@ const ImageViewer = ({ images, bucketName }: Props) => {
   const hasNext = currentIndex < images.length - 1;
   const hasPrev = currentIndex > 0;
 
-  const goToNext =useCallback( () => {
+  const goToNext = useCallback(() => {
     if (hasNext) {
       setCurrentIndex((prev) => prev + 1);
       setImageError(false);
     }
-
-
-  },[hasNext]);
+  }, [hasNext]);
 
   const goToPrev = useCallback(() => {
     if (hasPrev) {
       setCurrentIndex((prev) => prev - 1);
       setImageError(false);
     }
-  },[hasPrev]);
+  }, [hasPrev]);
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;

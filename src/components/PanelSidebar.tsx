@@ -14,12 +14,6 @@ import NavItems from "./NavItems";
 import Link from "next/link";
 import { Crown } from "lucide-react";
 
-type SidebarProps = React.ComponentProps<typeof Sidebar>;
-
-type Props = {
-  propetyName: string[];
-} & SidebarProps;
-
 const PanelSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar collapsible="icon" {...props}>

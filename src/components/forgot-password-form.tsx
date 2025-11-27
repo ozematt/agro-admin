@@ -55,7 +55,7 @@ export function ForgotPasswordForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Na podany email została wysłana wiadomość umożliwiająca
               zresetowanie hasła.
             </p>

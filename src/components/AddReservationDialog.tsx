@@ -13,19 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-
 import { DatePicker } from "@/components";
+
 import { usePathname } from "next/navigation";
 import { useActionState } from "react";
 import { submitForm } from "@/app/panel/[slug]/actions";
 import { PROPERTIES } from "@/config";
 
 const initialState = { error: {}, success: "" };
-
-
-
-
-
 
 const AddReservationDialog = () => {
   const pathname = usePathname();

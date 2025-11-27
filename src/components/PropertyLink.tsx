@@ -1,6 +1,5 @@
 "use client";
 
-import { House, IconNode } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { createSlug } from "@/utils/helpers";

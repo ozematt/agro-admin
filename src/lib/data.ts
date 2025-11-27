@@ -13,6 +13,7 @@ export async function getAllImagesFromBucket(bucketName: string) {
         offset: 0,
         sortBy: { column: "created_at", order: "desc" },
       });
+      
 
     if (error) throw error;
 

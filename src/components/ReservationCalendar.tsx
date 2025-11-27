@@ -1,6 +1,6 @@
-import { getReservationDays } from '@/lib/data';
-import { ReservationCalendarContent } from '.';
-import { createReservationDaysArr } from '@/lib/reservations';
+import { getReservationDays } from "@/lib/data";
+import { ReservationCalendarContent } from ".";
+import { createReservationDaysArr } from "@/lib/reservations";
 
 type Prop = {
   propertyName: string;
@@ -14,5 +14,6 @@ const ReservationCalendar = async ({ propertyName }: Prop) => {
 
   return <ReservationCalendarContent reservedDates={reservedDates} />;
 };
+
 
 export default ReservationCalendar;

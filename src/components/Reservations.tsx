@@ -22,6 +22,7 @@ const Reservations = async ({ propertyName }: Prop) => {
   cacheTag(`reservation-${propertyName}`);
   cacheLife("minutes");
 
+  
   return (
     <Card>
       <CardHeader>
