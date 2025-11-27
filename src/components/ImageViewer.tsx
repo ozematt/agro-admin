@@ -1,11 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import ImageRemoveAlert from "./ImageRemoveAlert";
-import { Skeleton } from "./ui/skeleton";
+
 
 type GalleryImage = {
   title: string;
@@ -32,19 +32,21 @@ const ImageViewer = ({ images, bucketName }: Props) => {
   const hasNext = currentIndex < images.length - 1;
   const hasPrev = currentIndex > 0;
 
-  const goToNext = () => {
+  const goToNext =useCallback( () => {
     if (hasNext) {
       setCurrentIndex((prev) => prev + 1);
       setImageError(false);
     }
-  };
 
-  const goToPrev = () => {
+
+  },[hasNext]);
+
+  const goToPrev = useCallback(() => {
     if (hasPrev) {
       setCurrentIndex((prev) => prev - 1);
       setImageError(false);
     }
-  };
+  },[hasPrev]);
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;

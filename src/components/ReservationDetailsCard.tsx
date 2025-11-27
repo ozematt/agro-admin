@@ -37,6 +37,10 @@ import { type Reservation } from "./ReservationViewer";
 type Prop = { reservation: Reservation };
 
 const ReservationDetailsCard = ({ reservation }: Prop) => {
+
+
+
+
   const {
     status,
     check_in,

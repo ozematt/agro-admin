@@ -28,15 +28,11 @@ const MONTHS = [
   "Grudzień",
 ];
 
-// Sample booking data
-const bookedDates = [
-  new Date(2025, 9, 5),
-  new Date(2025, 9, 6),
-  new Date(2025, 9, 7),
-  new Date(2025, 10, 7),
-];
+type Prop = {
+  reservedDates: Date[];
+};
 
-const BookingCalendar = () => {
+const BookingCalendar = ({ reservedDates }: Prop) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const currentYear = currentDate.getFullYear();
@@ -55,41 +51,24 @@ const BookingCalendar = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
   };
 
-  // Pomocnicza funkcja do porównywania dat (tylko rok-miesiąc-dzień)
-  const isSameDay = (date1: Date, date2: Date): boolean => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
+  // Pomocnicza funkcja do porównywania dat
+  const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
 
-  // Funkcja sprawdzająca czy data jest zarezerwowana
-  // const isDateBooked = (
-  //   day: number,
-  //   month: number,
-  //   year: number,
-  //   bookedDates: Date[],
-  // ): boolean => {
-  //   const checkDate = new Date(year, month, day);
-  //   return bookedDates.some((bookedDate) => isSameDay(checkDate, bookedDate));
-  // };
-
-  // W komponencie:
+  // Tablica do renderowania dni miesiąca
   const days = [];
-  // const today = new Date();
 
+  // Przesuwa pierwszy dzien miesiąca do właściwej kolunmy dnia tygodnia
   for (let i = 0; i < firstDay; i++) {
     days.push(<div key={`empty-${i}`} className="aspect-square" />);
   }
-
+  // Dodaje dni do kalendarza, styluje dzisiejszy i zarezerwowany dzień
   for (let day = 1; day <= daysInMonth; day++) {
     const currentDate = new Date(currentYear, currentMonth, day);
-    const isBooked = bookedDates.some((bookedDate) =>
-      isSameDay(currentDate, bookedDate),
+
+    const isBooked = reservedDates.some((reservedDate: any) =>
+      isSameDay(reservedDate, currentDate),
     );
     const isToday = isSameDay(currentDate, today);
-
     days.push(
       <button
         key={day}
@@ -103,7 +82,6 @@ const BookingCalendar = () => {
       </button>,
     );
   }
-  // console.log(days);
 
   return (
     <Card>

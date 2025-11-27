@@ -12,38 +12,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Building, Building2, House, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { DatePicker } from "@/components";
 import { usePathname } from "next/navigation";
 import { useActionState } from "react";
 import { submitForm } from "@/app/panel/[slug]/actions";
-
-const PROPERTIES = [
-  {
-    name: "Domek 1",
-    slug: "domek-1",
-    description: "Super domek",
-    icon: House,
-    id: 1,
-  },
-  {
-    name: "Domek 2",
-    slug: "domek-2",
-    description: "Super domek",
-    icon: Building,
-    id: 2,
-  },
-  {
-    name: "Domek 3",
-    slug: "domek-3",
-    description: "Super domek",
-    icon: Building2,
-    id: 3,
-  },
-];
+import { PROPERTIES } from "@/config";
 
 const initialState = { error: {}, success: "" };
+
+
+
+
+
 
 const AddReservationDialog = () => {
   const pathname = usePathname();
@@ -52,7 +34,7 @@ const AddReservationDialog = () => {
 
   const [state, formAction] = useActionState(submitForm, initialState);
 
-  // console.log(state);
+  console.log(state);
 
   return (
     <Dialog>

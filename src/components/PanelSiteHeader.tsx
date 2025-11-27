@@ -4,9 +4,9 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components";
 import { usePathname } from "next/navigation";
-import { createTitle } from "@/utils/helpers";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/skeleton";
+import { PROPERTIES } from "@/config";
 
 const PanelSiteHeader = () => {
   return (
@@ -34,7 +34,8 @@ export default PanelSiteHeader;
 const SiteHeaderWrapper = () => {
   const pathname = usePathname();
 
-  const title = createTitle(pathname);
+  const slug = pathname.split("/")[2];
+  const title = PROPERTIES.find((el) => el.slug === slug)?.name;
 
   return <p className="text-base font-medium">{title}</p>;
 };

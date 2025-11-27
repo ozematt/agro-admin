@@ -1,4 +1,5 @@
-import PropertyLink from "./PropertyLink";
+"use client";
+// import { useEffect, useState } from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -6,23 +7,12 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "./ui/sidebar";
-
-const NAV_ITEMS = [
-  {
-    id: "1",
-    name: "Domek_1",
-  },
-  {
-    id: "2",
-    name: "Domek_2",
-  },
-  {
-    id: "3",
-    name: "Domek_3",
-  },
-] as const;
+import PropertyLink from "./PropertyLink";
+import { PROPERTIES } from "@/config";
 
 const NavItems = () => {
+  const propertyList = PROPERTIES.map((el) => el.name);
+
   return (
     <>
       <SidebarMenu>
@@ -35,8 +25,8 @@ const NavItems = () => {
       <SidebarGroup>
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
-            {NAV_ITEMS.map((item) => (
-              <PropertyLink key={item.id} propertyName={item.name} />
+            {propertyList.map((item, index) => (
+              <PropertyLink key={index} propertyName={item} />
             ))}
           </SidebarMenu>
         </SidebarGroupContent>

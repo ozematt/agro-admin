@@ -15,15 +15,6 @@ export const createSlug = (text: string): string => {
     .replace(/^-+|-+$/g, ""); // usuń - z początku i końca
 };
 
-// Tworzenie tytułu ze sluga
-export const createTitle = (url: string): string => {
-  return url.split("/")[2]
-    ? (url.split("/")[2].charAt(0).toUpperCase() + url.split("/")[2].slice(1))
-        .split("-")
-        .join(" ")
-    : "Panel";
-};
-
 // Tworzenie daty: np. 29 lis - 30 lis 2025
 export const formatDateRange = (
   startDateStr: string,
@@ -78,16 +69,16 @@ export const formatCreatedAt = (dateString: string): string => {
 };
 
 //Tworzenie dat: np."29 listopada 2025, sobota"
-export const formatCheckInOut = (dateStr: string) => {
+export const formatCheckInOut = (dateString: string) => {
   const datePart = new Intl.DateTimeFormat("pl-PL", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date(dateStr));
+  }).format(new Date(dateString));
 
   const dayPart = new Intl.DateTimeFormat("pl-PL", {
     weekday: "long",
-  }).format(new Date(dateStr));
+  }).format(new Date(dateString));
 
   return ` ${datePart}, ${dayPart}`;
 };

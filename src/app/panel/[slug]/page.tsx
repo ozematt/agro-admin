@@ -2,10 +2,14 @@
 import {
   Gallery,
   ImageUpload,
-  BookingCalendar,
+  ReservationCalendar,
   Reservations,
 } from "@/components";
-import { GallerySkeleton, ReservationSkeleton } from "@/components/skeletons";
+import {
+  GallerySkeleton,
+  ReservationCalendarSkeleton,
+  ReservationSkeleton,
+} from "@/components/skeletons";
 import { Suspense } from "react";
 
 const PropertyPage = async ({
@@ -18,18 +22,20 @@ const PropertyPage = async ({
   return (
     <main className="container mx-auto max-w-7xl px-4 py-8">
       <div className="space-y-8">
-        {/* Top Section: Calendar and Bookings */}
+        {/* Top Section: Calendar and Reservations */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <BookingCalendar />
-          <Suspense key={slug} fallback={<ReservationSkeleton />}>
-            <Reservations slug={slug} />
+          <Suspense fallback={<ReservationCalendarSkeleton />}>
+            <ReservationCalendar propertyName={slug} />
+          </Suspense>
+          <Suspense fallback={<ReservationSkeleton />}>
+            <Reservations propertyName={slug} />
           </Suspense>
         </div>
 
         {/* Bottom Section: Image Management */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ImageUpload bucketName={slug} />
-          <Suspense key={slug} fallback={<GallerySkeleton />}>
+          <Suspense fallback={<GallerySkeleton />}>
             <Gallery bucketName={slug} />
           </Suspense>
         </div>

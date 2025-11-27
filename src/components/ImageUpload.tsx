@@ -24,8 +24,6 @@ const maxSizeMB = 3;
 const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 const maxFiles = 6;
 
-// TODO:
-
 const ImageUpload = ({ bucketName }: Prop) => {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
