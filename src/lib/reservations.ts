@@ -32,8 +32,6 @@ export async function checkReservation(
   }
 }
 
-
-
 // Tworzy tablice dat, od daty poczętkowej do daty koncowej
 export function createReservationDaysArr(
   dataStartu: string | Date,

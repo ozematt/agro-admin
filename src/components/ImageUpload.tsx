@@ -17,10 +17,8 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 type Prop = {
-  bucketName: string}
-
-
-
+  bucketName: string;
+};
 
 const maxSizeMB = 3;
 const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
@@ -84,22 +82,6 @@ const ImageUpload = ({ bucketName }: Prop) => {
       setIsPending(false);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 
   return (
     <Card>

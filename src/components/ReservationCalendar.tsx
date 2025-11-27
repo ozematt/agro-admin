@@ -15,5 +15,4 @@ const ReservationCalendar = async ({ propertyName }: Prop) => {
   return <ReservationCalendarContent reservedDates={reservedDates} />;
 };
 
-
 export default ReservationCalendar;
