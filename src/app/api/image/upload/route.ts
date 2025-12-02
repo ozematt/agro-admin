@@ -69,7 +69,9 @@ export async function POST(req: NextRequest) {
       success: true,
       uploaded: successful.length,
       failed: failed.length,
-      images: successful.map((r) => (r as PromiseFulfilledResult<any>).value),
+      images: successful.map(
+        (r) => (r as PromiseFulfilledResult<unknown>).value,
+      ),
     });
   } catch (error) {
     console.error("Upload error:", error);

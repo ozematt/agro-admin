@@ -10,6 +10,7 @@ import {
   ReservationCalendarSkeleton,
   ReservationSkeleton,
 } from "@/components/skeletons";
+
 import { Suspense } from "react";
 
 const PropertyPage = async ({
@@ -25,10 +26,10 @@ const PropertyPage = async ({
         {/* Top Section: Calendar and Reservations */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <Suspense fallback={<ReservationCalendarSkeleton />}>
-            <ReservationCalendar propertyName={slug} />
+            <ReservationCalendar propertySlug={slug} />
           </Suspense>
           <Suspense fallback={<ReservationSkeleton />}>
-            <Reservations propertyName={slug} />
+            <Reservations propertySlug={slug} />
           </Suspense>
         </div>
 

@@ -2,24 +2,23 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { createSlug } from "@/utils/helpers";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/skeleton";
-import { PROPERTIES } from "@/config";
+import { type HouseItem } from "@/config";
 
 interface Props {
-  propertyName: string;
+  property: HouseItem;
 }
 
-const PropertyLink = ({ propertyName }: Props) => {
+const PropertyLink = ({ property }: Props) => {
   return (
-    <Link href={`/panel/${createSlug(propertyName)}`}>
+    <Link href={`/panel/${property.slug}`}>
       <SidebarMenuItem>
         <Suspense
-          fallback={<Skeleton className="h-7 w-65" key={propertyName} />}
+          fallback={<Skeleton className="h-7 w-65" key={property.name} />}
         >
-          <LinkWrapper propertyName={propertyName} />
+          <LinkWrapper property={property} />
         </Suspense>
       </SidebarMenuItem>
     </Link>
@@ -29,24 +28,21 @@ const PropertyLink = ({ propertyName }: Props) => {
 export default PropertyLink;
 
 // NOTE: for cacheComponents
-const LinkWrapper = ({ propertyName }: Props) => {
+const LinkWrapper = ({ property }: Props) => {
   const pathname = usePathname();
-  const slug = createSlug(propertyName);
-  const href = `/panel/${slug}`;
+  const href = `/panel/${property.slug}`;
   const isActive = pathname === href;
-  const Icon = PROPERTIES.find((el) => el.name === propertyName)
-    ?.icon as React.ElementType;
 
   return (
     <SidebarMenuButton
-      tooltip={propertyName}
+      title={property.name}
       className={`${
         isActive &&
         "bg-primary hover:bg-primary dark:text-primary-foreground text-white hover:text-white/80"
       }`}
     >
-      <Icon />
-      {propertyName}
+      <property.Icon />
+      {property.name}
     </SidebarMenuButton>
   );
 };

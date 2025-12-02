@@ -5,17 +5,12 @@ import {
   Users,
   Mail,
   Phone,
-  MapPin,
   MessageSquare,
   Clock,
-  Home,
   Check,
   X,
-  MoreVertical,
   Bed,
-  Wifi,
-  Coffee,
-  Tv,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,10 +28,24 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { formatCheckInOut, formatCreatedAt } from "@/utils/helpers";
 import { type Reservation } from "./ReservationViewer";
+import { type HouseItem, PROPERTIES } from "@/config";
+import { usePathname } from "next/navigation";
 
 type Prop = { reservation: Reservation };
 
 const ReservationDetailsCard = ({ reservation }: Prop) => {
+  const pathname = usePathname();
+  const slug = pathname.split("/")[2];
+  const propertyInfo = PROPERTIES.find((property) => property.slug === slug);
+  const {
+    name,
+    description,
+    icon: Icon,
+    beds,
+    price_per_night,
+    facilities,
+  } = propertyInfo as HouseItem;
+
   const {
     status,
     check_in,
@@ -45,8 +54,8 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
     nights,
     created_at,
     reservation_number,
+    notes,
     guest_id: { first_name, last_name, email, phone },
-    property_id: { name, beds, price_per_night, facilities },
   } = reservation;
 
   return (
@@ -88,12 +97,9 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                   </div>
                   <CardDescription className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
-                    {formatCreatedAt(created_at)}
+                    Utworzono: {formatCreatedAt(created_at)}
                   </CardDescription>
                 </div>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-5 w-5" />
-                </Button>
               </div>
             </CardHeader>
 
@@ -209,30 +215,28 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
                         <div className="bg-muted flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-lg">
-                          <Home className="text-muted-foreground h-8 w-8" />
+                          <Icon />
                         </div>
                         <div className="flex-1">
                           <h4 className="mb-1 text-lg font-semibold">{name}</h4>
                           <p className="text-muted-foreground mb-3 text-sm">
-                            Przestronny apartament z widokiem na góry
+                            {description}
                           </p>
                           <div className="flex flex-wrap gap-3">
                             <Badge variant="secondary" className="gap-1.5">
                               <Bed className="h-3 w-3" />
-                              {beds}sypialnie
+                              {beds} sypialnie
                             </Badge>
-                            <Badge variant="secondary" className="gap-1.5">
-                              <Wifi className="h-3 w-3" />
-                              WiFi
-                            </Badge>
-                            <Badge variant="secondary" className="gap-1.5">
-                              <Coffee className="h-3 w-3" />
-                              Kuchnia
-                            </Badge>
-                            <Badge variant="secondary" className="gap-1.5">
-                              <Tv className="h-3 w-3" />
-                              TV
-                            </Badge>
+                            {facilities.map((el, i) => (
+                              <Badge
+                                key={i}
+                                variant="secondary"
+                                className="gap-1.5"
+                              >
+                                <el.icon className="h-3 w-3" />
+                                {el.name}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -260,7 +264,7 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                     <h3 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
                       Kontakt
                     </h3>
-                    <div className="space-y-3">
+                    <div className="flex items-center justify-center">
                       <Button
                         variant="link"
                         className="text-foreground h-auto justify-start gap-3 p-0"
@@ -277,8 +281,8 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                       </Button>
                     </div>
                   </div>
-
-                  <div className="space-y-4">
+                  {/* Adres */}
+                  {/* <div className="space-y-4">
                     <h3 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
                       Adres
                     </h3>
@@ -290,7 +294,7 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                         <div>Polska</div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </TabsContent>
 
@@ -302,17 +306,13 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                       <MessageSquare className="text-muted-foreground mt-0.5 h-5 w-5" />
                       <div className="flex-1">
                         <div className="mb-2 flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            Notatka od gościa
-                          </span>
-                          <span className="text-muted-foreground text-xs">
+                          <span className="text-sm font-medium">Notatki</span>
+                          {/* <span className="text-muted-foreground text-xs">
                             18 lis 2025, 14:32
-                          </span>
+                          </span> */}
                         </div>
                         <p className="text-muted-foreground text-sm">
-                          Proszę o przygotowanie łóżeczka dziecięcego oraz
-                          wysokiego krzesełka. Planujemy przyjazd około godziny
-                          18:00.
+                          {notes ? notes : "Brak notatek"}
                         </p>
                       </div>
                     </div>
@@ -356,6 +356,37 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
 
         {/* Prawa kolumna - Podsumowanie */}
         <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <DollarSign className="h-4 w-4" />
+                Płatność
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">
+                  Cena pokoju za noc
+                </span>
+                <span>{price_per_night} PLN</span>
+              </div>
+              {/* <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Dodatkowe usługi</span>
+                <span>280 PLN</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Opłata serwisowa</span>
+                <span>100 PLN</span>
+              </div> */}
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">Razem</span>
+                <span className="text-xl font-bold">
+                  {nights * price_per_night} PLN
+                </span>
+              </div>
+            </CardContent>
+          </Card>
           {/* Akcje */}
           <Card>
             <CardHeader>
@@ -374,6 +405,40 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                 <X className="h-4 w-4" />
                 Odrzuć rezerwację
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Historia */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Clock className="h-4 w-4" />
+                Historia
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-3">
+                <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-amber-500" />
+                <div>
+                  <div className="text-sm font-medium">
+                    Rezerwacja utworzona
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    {formatCreatedAt(created_at, true)}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="bg-muted mt-2 h-2 w-2 flex-shrink-0 rounded-full" />
+                <div>
+                  <div className="text-sm font-medium">
+                    Email potwierdzenia wysłany
+                  </div>
+                  <div className="text-muted-foreground text-xs">
+                    18 lis 2025, 14:33 ?
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

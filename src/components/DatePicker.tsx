@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { formatLocalDate } from "@/utils/helpers";
 
 interface Prop {
   label: string;
@@ -32,7 +33,7 @@ const DatePicker = ({ label, name, id }: Prop) => {
         type="hidden"
         name={name}
         id={id}
-        value={date ? date.toISOString().split("T")[0] : ""}
+        value={date ? formatLocalDate(date) : ""}
       />
 
       <Popover open={open} onOpenChange={setOpen}>

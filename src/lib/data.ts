@@ -1,3 +1,4 @@
+import { PROPERTIES } from "@/config";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/client";
 
@@ -47,19 +48,15 @@ export async function getAllImagesFromBucket(bucketName: string) {
 }
 
 // Pobiera wszystkie dane związane z rezerwacją dla konkretego obiektu
-export async function getReservation(propertyName: string) {
+export async function getReservation(propertySlug: string) {
   const supabase = createClient();
   try {
-    const propertyId = await getPropertyId(propertyName);
-
-    if (propertyId.error) {
-      throw new Error("Nie ma tekiego obiektu.");
-    }
+    const propertyId = await getPropertyId(propertySlug);
 
     const { data, error } = await supabase
       .from("reservation")
-      .select(`*, property_id(*), guest_id(*)`)
-      .eq("property_id", propertyId.propertyId[0].id);
+      .select(`*, guest_id(*)`)
+      .eq("property_id", propertyId);
 
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
@@ -74,38 +71,16 @@ export async function getReservation(propertyName: string) {
   }
 }
 
-// pobiera id konkretnego obiektu
-export async function getPropertyId(propertyName: string) {
-  const supabase = createClient();
-  try {
-    const { data, error } = await supabase
-      .from("property")
-      .select("id")
-      .eq("slug", propertyName);
-    if (error) {
-      throw new Error(`Błąd Supabase: ${error.message}`);
-    }
-
-    return { success: true, propertyId: data, error: undefined };
-  } catch (error) {
-    throw error;
-  }
-}
-
 // Pobiera dni rezerwacji dla danego obiektu
-export async function getReservationDays(propertyName: string) {
+export async function getReservedDays(propertySlug: string) {
   const supabase = createClient();
   try {
-    const propertyId = await getPropertyId(propertyName);
-
-    if (propertyId.error) {
-      throw new Error("Nie ma tekiego obiektu.");
-    }
+    const propertyId = await getPropertyId(propertySlug);
 
     const { data, error } = await supabase
       .from("reservation")
       .select("check_in, check_out")
-      .eq("property_id", propertyId.propertyId[0].id);
+      .eq("property_id", propertyId);
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
     }
@@ -119,23 +94,14 @@ export async function getReservationDays(propertyName: string) {
     };
   }
 }
-
-// Pobiera dane o obiektach do wynajęcia
-// export async function getPropertyNames() {
-//   const supabase = createClient();
-//   try {
-//     const { data, error } = await supabase.from("property").select("name");
-
-//     if (error) {
-//       throw new Error(`Błąd Supabase: ${error.message}`);
-//     }
-
-//     return { success: true, property: data, error: undefined };
-//   } catch (error) {
-//     return {
-//       success: false,
-//       property: [],
-//       error: error instanceof Error ? error.message : "Nieznany błąd",
-//     };
-//   }
-// }
+export async function getPropertyId(propertySlug: string) {
+  try {
+    const property = PROPERTIES.find(
+      (property) => property.slug === propertySlug,
+    );
+    if (!property) throw new Error("Nie znaleziono obiektu");
+    return property.id;
+  } catch (error) {
+    console.error("Błąd:", error);
+  }
+}

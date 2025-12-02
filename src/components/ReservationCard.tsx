@@ -26,10 +26,7 @@ const ReservationCardItem = ({ reservation }: Prop) => {
     check_out,
     guests,
     nights,
-    created_at,
-    reservation_number,
-    guest_id: { first_name, last_name, email, phone },
-    property_id: { name, beds, price_per_night, facilities },
+    guest_id: { first_name, last_name },
   } = reservation;
 
   const [isHovered, setIsHovered] = useState(false);

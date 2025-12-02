@@ -31,7 +31,7 @@ const LoginForm = () => {
               <CardDescription>Zaloguj się do swojego konta</CardDescription>
             </CardHeader>
             <CardContent>
-              <form>
+              <form action={formAction}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
@@ -68,7 +68,6 @@ const LoginForm = () => {
                   )}
                   <Button
                     type="submit"
-                    formAction={formAction}
                     className="h-12 w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-md transition duration-200 hover:bg-blue-700 hover:shadow-lg"
                     disabled={isPending}
                   >

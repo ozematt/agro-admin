@@ -12,14 +12,14 @@ import { ReservationViewer } from "@/components";
 import { cacheLife, cacheTag } from "next/cache";
 
 type Prop = {
-  propertyName: string;
+  propertySlug: string;
 };
 
-const Reservations = async ({ propertyName }: Prop) => {
+const Reservations = async ({ propertySlug }: Prop) => {
   // Pobieramy rezerwacje dla danego obiektu, cachujemy dane
   "use cache";
-  const { reservations, error } = await getReservation(propertyName);
-  cacheTag(`reservation-${propertyName}`);
+  const { reservations, error } = await getReservation(propertySlug);
+  cacheTag(`reservation-${propertySlug}`);
   cacheLife("minutes");
 
   return (

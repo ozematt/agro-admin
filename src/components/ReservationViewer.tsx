@@ -9,15 +9,6 @@ type Guest = {
   phone: number | string;
 };
 
-type Property = {
-  id: number;
-  created_at: string;
-  name: string;
-  price_per_night: number;
-  beds: number;
-  facilities: string[];
-};
-
 export type Reservation = {
   id: number;
   created_at: string;
@@ -27,9 +18,10 @@ export type Reservation = {
   nights: number;
   status: "oczekujący" | "potwierdzony" | "odrzucony" | string;
   guests: number;
+  adults: number;
+  children: number;
   guest_id: Guest;
   notes: string | null;
-  property_id: Property;
 };
 
 type Prop = {

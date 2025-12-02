@@ -65,7 +65,7 @@ const BookingCalendar = ({ reservedDates }: Prop) => {
   for (let day = 1; day <= daysInMonth; day++) {
     const currentDate = new Date(currentYear, currentMonth, day);
 
-    const isBooked = reservedDates.some((reservedDate: any) =>
+    const isBooked = reservedDates.some((reservedDate: Date) =>
       isSameDay(reservedDate, currentDate),
     );
     const isToday = isSameDay(currentDate, today);

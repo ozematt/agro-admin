@@ -1,42 +1,69 @@
 "use server";
 
-import { reservationDialogSchema } from "@/lib/schemas";
+import { reservationSchema } from "@/lib/schemas";
+import { createReservationNumber, getNights } from "@/utils/helpers";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { refresh, revalidateTag } from "next/cache";
+import z from "zod";
 
 const supabase = createAdminClient();
 
 // NOTE: Nie używamy bibliotek klienckich (toast)
-
-type State = {
-  error?: Record<string, string[]>;
-  success?: string;
+export type Errors = {
+  formErrors: string[];
+  fieldErrors: { [key: string]: string[] };
 };
 
-export async function submitForm(
+export type ReservationSchema = z.infer<typeof reservationSchema>;
+
+export type State = {
+  currentState?: Partial<ReservationSchema>;
+  success?: boolean;
+  errors?: { [key: string]: string[] } | null;
+};
+
+export async function addReservationAction(
   prevState: State,
   formData: FormData,
 ): Promise<State> {
-  console.log(Object.fromEntries(formData.entries()));
+  const check_in = formData.get("check_in") as string;
+  const check_out = formData.get("check_out") as string;
+  const adults = Number(formData.get("adults") ?? 2);
+  const children = Number(formData.get("children") ?? 0);
 
-  const parsedData = reservationDialogSchema.safeParse({
-    firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
-    guests: formData.get("guests"),
-    checkIn: formData.get("checkIn"),
-    checkOut: formData.get("checkOut"),
-    property: formData.get("property"),
-    status: formData.get("status"),
-  });
+  const guests = adults + children;
+  const nights = getNights(check_in, check_out);
+  const reservationNumber = createReservationNumber(check_in);
+
+  formData.append("guests", guests.toString());
+  formData.append("nights", nights.toString());
+  formData.append("reservation_number", reservationNumber);
+
+  const data = Object.fromEntries(formData.entries());
+
+  const parsedData = reservationSchema.safeParse(data);
 
   if (!parsedData.success) {
-    return { error: parsedData.error.flatten().fieldErrors };
+    const currentState = {
+      ...prevState.currentState,
+      ...data,
+    };
+    const flatten = z.flattenError(parsedData.error);
+    return {
+      currentState,
+      success: false,
+      errors: flatten.fieldErrors,
+    };
   }
 
   // TODO: Add logic to save the reservation to the database (e.g., Supabase)
   // const { error } = await supabase.from('reservations').insert([parsedData.data]);
 
-  return { success: "dane wysłane" };
+  return {
+    currentState: parsedData.data,
+    success: true,
+    errors: null,
+  };
 }
 
 export async function deleteImageFromBucket(formData: FormData) {

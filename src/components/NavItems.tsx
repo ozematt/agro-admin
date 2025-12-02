@@ -11,8 +11,6 @@ import PropertyLink from "./PropertyLink";
 import { PROPERTIES } from "@/config";
 
 const NavItems = () => {
-  const propertyList = PROPERTIES.map((el) => el.name);
-
   return (
     <>
       <SidebarMenu>
@@ -25,8 +23,8 @@ const NavItems = () => {
       <SidebarGroup>
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
-            {propertyList.map((item, index) => (
-              <PropertyLink key={index} propertyName={item} />
+            {PROPERTIES.map((item, index) => (
+              <PropertyLink key={index} property={item} />
             ))}
           </SidebarMenu>
         </SidebarGroupContent>
