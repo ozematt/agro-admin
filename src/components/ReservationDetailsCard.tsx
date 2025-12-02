@@ -37,14 +37,8 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
   const pathname = usePathname();
   const slug = pathname.split("/")[2];
   const propertyInfo = PROPERTIES.find((property) => property.slug === slug);
-  const {
-    name,
-    description,
-    icon: Icon,
-    beds,
-    price_per_night,
-    facilities,
-  } = propertyInfo as HouseItem;
+  const { name, description, Icon, beds, price_per_night, facilities } =
+    propertyInfo as HouseItem;
 
   const {
     status,

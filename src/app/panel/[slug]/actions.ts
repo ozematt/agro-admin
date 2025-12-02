@@ -1,5 +1,6 @@
 "use server";
 
+import { checkReservation } from "@/lib/reservations";
 import { reservationSchema } from "@/lib/schemas";
 import { createReservationNumber, getNights } from "@/utils/helpers";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -9,11 +10,6 @@ import z from "zod";
 const supabase = createAdminClient();
 
 // NOTE: Nie używamy bibliotek klienckich (toast)
-export type Errors = {
-  formErrors: string[];
-  fieldErrors: { [key: string]: string[] };
-};
-
 export type ReservationSchema = z.infer<typeof reservationSchema>;
 
 export type State = {
@@ -41,26 +37,132 @@ export async function addReservationAction(
 
   const data = Object.fromEntries(formData.entries());
 
-  const parsedData = reservationSchema.safeParse(data);
+  const parsed = reservationSchema.safeParse(data);
 
-  if (!parsedData.success) {
+  if (!parsed.success) {
     const currentState = {
       ...prevState.currentState,
       ...data,
     };
-    const flatten = z.flattenError(parsedData.error);
+    const flatten = z.flattenError(parsed.error);
     return {
       currentState,
       success: false,
       errors: flatten.fieldErrors,
     };
   }
+  // sprawdzanie dostępności terminu rezerwacji
+  const isAvailable = await checkReservation(
+    parsed.data.check_in,
+    parsed.data.check_out,
+    "",
+    Number(parsed.data.property_id),
+  );
 
-  // TODO: Add logic to save the reservation to the database (e.g., Supabase)
-  // const { error } = await supabase.from('reservations').insert([parsedData.data]);
+  if (!isAvailable) {
+    return {
+      currentState: prevState.currentState,
+      success: false,
+      errors: {
+        check_in: ["Termin zajety"],
+        check_out: ["Termin zajęty"],
+      },
+    };
+  }
+
+  // obiekt dla bazy danych
+  const guest = {
+    first_name: parsed.data.first_name,
+    last_name: parsed.data.last_name,
+    email: parsed.data.email,
+    phone: Number(parsed.data.phone),
+  };
+
+  let guestId = 0;
+
+  // Dodawanie gościa do bazy danych
+  try {
+    // Sprawdzanie czy mamy już dane gościa
+    const { data, error } = await supabase
+      .from("guests")
+      .select()
+      .eq("first_name", guest.first_name)
+      .eq("last_name", guest.last_name)
+      .eq("email", guest.email)
+      .eq("phone", guest.phone);
+
+    if (error) {
+      guestId = 0;
+      throw new Error("Błąd:", error);
+    }
+
+    if (data?.length > 0) {
+      // jeśli mamy dane przypisujemy id gości do zmiennej
+      guestId = data[0].id;
+    } else {
+      // jeśli nie mamy dodajemy go do bazy danych
+      try {
+        const { data, error } = await supabase
+          .from("guests")
+          .insert([guest])
+          .select("id");
+        if (error) {
+          guestId = 0;
+          throw new Error("Błąd:", error);
+        }
+        // przypisujemy id nowo dodanego gościa do zmiennej
+        guestId = data[0].id;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    if (error) {
+      throw new Error("Błąd:", error);
+    }
+  } catch (error) {
+    console.error("Błąd dodawania gościa:", error);
+  }
+
+  // obiekt dla bazy danych
+  const reservation = {
+    reservation_number: parsed.data.reservation_number,
+    property_id: Number(parsed.data.property_id),
+    check_in: parsed.data.check_in,
+    check_out: parsed.data.check_out,
+    nights: Number(parsed.data.nights),
+    status: parsed.data.status,
+    guests: Number(parsed.data.guests),
+    adults: Number(parsed.data.adults),
+    children: Number(parsed.data.children),
+    guest_id: Number(guestId),
+    notes: parsed.data.notes,
+  };
+
+  // dodawanie rezerwacji do bazy dancyh
+  try {
+    if (guestId === 0) {
+      throw new Error("Nie dodano gościa");
+    }
+    const { data, error } = await supabase
+      .from("reservation")
+      .insert([reservation])
+      .select();
+
+    if (error) {
+      throw new Error("Błąd:", error);
+    }
+    console.log("Nowa rezerwacja:", data);
+  } catch (error) {
+    console.log(error);
+  }
+
+  // rewalidacja danych z cache
+  revalidateTag("reservation", "max");
+  refresh();
 
   return {
-    currentState: parsedData.data,
+    currentState: parsed.data,
     success: true,
     errors: null,
   };

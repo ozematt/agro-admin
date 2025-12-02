@@ -18,18 +18,51 @@ import { DatePicker } from "@/components";
 import { usePathname } from "next/navigation";
 import { getCurrentProperty } from "@/utils/helpers";
 import { Textarea } from "./ui/textarea";
-import { addReservationAction } from "@/app/panel/[slug]/actions";
-import { useActionState } from "react";
+import {
+  addReservationAction,
+  ReservationSchema,
+  State,
+} from "@/app/panel/[slug]/actions";
+import { useActionState, useEffect } from "react";
+import toast from "react-hot-toast";
+
+export const emptyReservation: ReservationSchema = {
+  first_name: "",
+  last_name: "",
+  phone: "",
+  email: "",
+  reservation_number: "",
+  check_in: "",
+  check_out: "",
+  nights: 0,
+  adults: 2,
+  children: 0,
+  guests: 2,
+  property_id: "",
+  status: "oczekujący",
+  notes: "",
+};
+
+export const initialState: State = {
+  currentState: emptyReservation,
+  success: undefined,
+  errors: null,
+};
 
 const AddReservationDialog = () => {
-  // Dane obiektu
   const pathname = usePathname();
   const { name, id, Icon, description } = getCurrentProperty(pathname);
 
   const [state, formAction, isPending] = useActionState(
     addReservationAction,
-    {},
+    initialState,
   );
+
+  // useEffect(() => {
+  //   if (state.success) {
+  //     toast.success("Dodano rezerwację pomyślnie!");
+  //   }
+  // }, [state.success]);
 
   return (
     <Dialog>

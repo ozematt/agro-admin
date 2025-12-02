@@ -58,7 +58,7 @@ export const formatCreatedAt = (
   dateString: string,
   short: boolean = false,
 ): string => {
-  const date = new Date(`${dateString}T00:00:00`);
+  const date = new Date(`${dateString}`);
 
   const datePart = new Intl.DateTimeFormat("pl-PL", {
     day: "numeric",

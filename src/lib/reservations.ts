@@ -2,13 +2,14 @@ import { getReservation } from "./data";
 
 // Sprawdza dostepność rezerwacji, zwraca boolean
 export async function checkReservation(
-  propertyName: string,
   startDate: string,
   endDate: string,
+  propertyName?: string,
+  propertyId?: number,
 ) {
   try {
     const datesToCheck = createReservationDaysArr(startDate, endDate);
-    const data = await getReservation(propertyName);
+    const data = await getReservation(propertyName, propertyId);
 
     if (!data.success) {
       throw new Error(`Błąd Supabase: ${data.error}`);

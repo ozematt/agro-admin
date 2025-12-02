@@ -19,7 +19,7 @@ const Reservations = async ({ propertySlug }: Prop) => {
   // Pobieramy rezerwacje dla danego obiektu, cachujemy dane
   "use cache";
   const { reservations, error } = await getReservation(propertySlug);
-  cacheTag(`reservation-${propertySlug}`);
+  cacheTag(`reservation-${propertySlug}`, "reservation");
   cacheLife("minutes");
 
   return (

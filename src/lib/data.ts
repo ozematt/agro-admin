@@ -48,15 +48,24 @@ export async function getAllImagesFromBucket(bucketName: string) {
 }
 
 // Pobiera wszystkie dane związane z rezerwacją dla konkretego obiektu
-export async function getReservation(propertySlug: string) {
+export async function getReservation(
+  propertySlug?: string,
+  propertyId?: number,
+) {
   const supabase = createClient();
+
   try {
-    const propertyId = await getPropertyId(propertySlug);
+    let id;
+    if (!propertyId && propertySlug) {
+      id = await getPropertyId(propertySlug);
+    } else {
+      id = propertyId;
+    }
 
     const { data, error } = await supabase
       .from("reservation")
       .select(`*, guest_id(*)`)
-      .eq("property_id", propertyId);
+      .eq("property_id", id);
 
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
