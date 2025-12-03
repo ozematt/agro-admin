@@ -15,7 +15,7 @@ export type ReservationSchema = z.infer<typeof reservationSchema>;
 export type State = {
   currentState?: Partial<ReservationSchema>;
   success?: boolean;
-  errors?: { [key: string]: string[] } | null;
+  errors?: { [key: string]: string[] } | undefined;
 };
 
 export async function addReservationAction(
@@ -55,7 +55,6 @@ export async function addReservationAction(
   const isAvailable = await checkReservation(
     parsed.data.check_in,
     parsed.data.check_out,
-    "",
     Number(parsed.data.property_id),
   );
 
@@ -158,14 +157,178 @@ export async function addReservationAction(
   }
 
   // rewalidacja danych z cache
-  revalidateTag("reservation", "max");
+  revalidateTag(`reservation-${Number(parsed.data.property_id)}`, "max");
   refresh();
 
   return {
     currentState: parsed.data,
     success: true,
-    errors: null,
+    errors: undefined,
   };
+}
+
+export async function updateReservationAction(
+  prevState: State,
+  formData: FormData,
+): Promise<State> {
+  const reservationId = Number(formData.get("reservation_id"));
+  const guestId = Number(formData.get("guest_id"));
+
+  const check_in = formData.get("check_in") as string;
+  const check_out = formData.get("check_out") as string;
+  const adults = Number(formData.get("adults") ?? 2);
+  const children = Number(formData.get("children") ?? 0);
+
+  const guests = adults + children;
+  const nights = getNights(check_in, check_out);
+  const reservationNumber = createReservationNumber(check_in);
+
+  formData.append("guests", guests.toString());
+  formData.append("nights", nights.toString());
+  formData.append("reservation_number", reservationNumber);
+
+  formData.delete("reservation_id");
+  formData.delete("guest_id");
+
+  const data = Object.fromEntries(formData.entries());
+  const parsed = reservationSchema.safeParse(data);
+
+  if (!parsed.success) {
+    const currentState = {
+      ...prevState.currentState,
+      ...data,
+    };
+    const flatten = z.flattenError(parsed.error);
+    return {
+      currentState,
+      success: false,
+      errors: flatten.fieldErrors,
+    };
+  }
+
+  // sprawdzanie dostępności terminu rezerwacji
+  const isAvailable = await checkReservation(
+    parsed.data.check_in,
+    parsed.data.check_out,
+    Number(parsed.data.property_id),
+    reservationId,
+  );
+
+  if (!isAvailable) {
+    return {
+      currentState: prevState.currentState,
+      success: false,
+      errors: {
+        check_in: ["Termin zajety"],
+        check_out: ["Termin zajęty"],
+      },
+    };
+  }
+
+  // obiekt dla bazy danych
+  const guest = {
+    first_name: parsed.data.first_name,
+    last_name: parsed.data.last_name,
+    email: parsed.data.email,
+    phone: Number(parsed.data.phone),
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from("guests")
+      .update(guest)
+      .eq("id", guestId)
+      .select();
+
+    if (error) {
+      throw new Error("Błąd:", error);
+    }
+    console.log("Edytowany gość :", data);
+  } catch (error) {
+    console.error(error);
+  }
+
+  // obiekt dla bazy danych
+  const reservation = {
+    reservation_number: parsed.data.reservation_number,
+    property_id: Number(parsed.data.property_id),
+    check_in: parsed.data.check_in,
+    check_out: parsed.data.check_out,
+    nights: Number(parsed.data.nights),
+    status: parsed.data.status,
+    guests: Number(parsed.data.guests),
+    adults: Number(parsed.data.adults),
+    children: Number(parsed.data.children),
+    guest_id: Number(guestId),
+    notes: parsed.data.notes,
+  };
+
+  // edytowanie rezerwacji w bazie dancyh
+  try {
+    const { data, error } = await supabase
+      .from("reservation")
+      .update(reservation)
+      .eq("id", Number(reservationId))
+      .select();
+
+    if (error) {
+      throw new Error("Błąd:", error);
+    }
+    console.log("Edytowana rezerwacja :", data);
+  } catch (error) {
+    console.log(error);
+  }
+
+  // rewalidacja danych z cache
+  revalidateTag(`reservation-${Number(parsed.data.property_id)}`, "max");
+  refresh();
+
+  return {
+    currentState: parsed.data,
+    success: true,
+    errors: undefined,
+  };
+}
+
+export async function updateReservationStatus(formData: FormData) {
+  const reservationId = Number(formData.get("reservation_id"));
+  const status = formData.get("status")?.toString();
+
+  try {
+    const { error } = await supabase
+      .from("reservation")
+      .update({ status: status })
+      .eq("id", reservationId);
+
+    if (error) {
+      throw new Error("Błąd aktualizacji statusu rezerwacji");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  // rewalidacja danych z cache
+  revalidateTag(`reservation`, "max");
+  refresh();
+}
+
+export async function deleteReservationAction(formData: FormData) {
+  const reservationId = Number(formData.get("reservation_id"));
+  try {
+    const { error } = await supabase
+      .from("reservation")
+      .delete()
+      .eq("id", reservationId);
+
+    if (error) {
+      throw new Error("Błąd usuwania rezerwacji");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  // rewalidacja danych z cache
+  revalidateTag(`reservation`, "max");
+  refresh();
 }
 
 export async function deleteImageFromBucket(formData: FormData) {

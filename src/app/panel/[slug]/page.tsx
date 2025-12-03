@@ -1,4 +1,5 @@
 "use cache";
+
 import {
   Gallery,
   ImageUpload,
@@ -10,7 +11,7 @@ import {
   ReservationCalendarSkeleton,
   ReservationSkeleton,
 } from "@/components/skeletons";
-
+import { getPropertyId } from "@/lib/data";
 import { Suspense } from "react";
 
 const PropertyPage = async ({
@@ -20,16 +21,19 @@ const PropertyPage = async ({
 }) => {
   const { slug } = await params;
 
+  // cache componnets ?
+  const propertyId = await getPropertyId(slug);
+
   return (
     <main className="container mx-auto max-w-7xl px-4 py-8">
       <div className="space-y-8">
         {/* Top Section: Calendar and Reservations */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <Suspense fallback={<ReservationCalendarSkeleton />}>
-            <ReservationCalendar propertySlug={slug} />
+            <ReservationCalendar propertyId={propertyId!} />
           </Suspense>
           <Suspense fallback={<ReservationSkeleton />}>
-            <Reservations propertySlug={slug} />
+            <Reservations propertyId={propertyId!} />
           </Suspense>
         </div>
 

@@ -1,24 +1,4 @@
-import { HouseItem, PROPERTIES } from "@/config";
-
-// Funkcja do tworzenia slug-a
-export const createSlug = (text: string): string => {
-  return text
-    .toLowerCase()
-    .replace(/ą/g, "a")
-    .replace(/ć/g, "c")
-    .replace(/ę/g, "e")
-    .replace(/ł/g, "l")
-    .replace(/ń/g, "n")
-    .replace(/ó/g, "o")
-    .replace(/ś/g, "s")
-    .replace(/ź/g, "z")
-    .replace(/ż/g, "z")
-    .replace(/[^a-z0-9]+/g, "-") // zamień wszystko co nie jest literą/cyfrą na -
-    .replace(/^-+|-+$/g, ""); // usuń - z początku i końca
-};
-
 // NOTE: new Date(`${Date}T00:00:00`) bezpieczne dla "pl" strefy czasowej, brak przesunięcia daty
-
 // Tworzenie daty: np. 29 lis - 30 lis 2025
 export const formatDateRange = (
   startDateStr: string,
@@ -88,16 +68,6 @@ export const formatCheckInOut = (dateString: string) => {
   }).format(new Date(`${dateString}T00:00:00`));
 
   return ` ${datePart}, ${dayPart}`;
-};
-
-// Zwróci dano obiektu na podstawaie slug
-export const getCurrentProperty = (
-  pathname: string,
-  properties: HouseItem[] = PROPERTIES,
-) => {
-  const slug = pathname.split("/")[2];
-  const property = properties.find((property) => property.slug === slug);
-  return property as HouseItem;
 };
 
 export const getNights = (

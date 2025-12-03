@@ -1,4 +1,4 @@
-import { PROPERTIES } from "@/config";
+import { HouseItem, PROPERTIES } from "@/config";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/client";
 
@@ -48,24 +48,15 @@ export async function getAllImagesFromBucket(bucketName: string) {
 }
 
 // Pobiera wszystkie dane związane z rezerwacją dla konkretego obiektu
-export async function getReservation(
-  propertySlug?: string,
-  propertyId?: number,
-) {
+export async function getReservation(propertyId: number) {
   const supabase = createClient();
 
   try {
-    let id;
-    if (!propertyId && propertySlug) {
-      id = await getPropertyId(propertySlug);
-    } else {
-      id = propertyId;
-    }
-
     const { data, error } = await supabase
       .from("reservation")
       .select(`*, guest_id(*)`)
-      .eq("property_id", id);
+      .eq("property_id", propertyId)
+      .order("created_at", { ascending: false });
 
     if (error) {
       throw new Error(`Błąd Supabase: ${error.message}`);
@@ -81,11 +72,9 @@ export async function getReservation(
 }
 
 // Pobiera dni rezerwacji dla danego obiektu
-export async function getReservedDays(propertySlug: string) {
+export async function getReservedDays(propertyId: number) {
   const supabase = createClient();
   try {
-    const propertyId = await getPropertyId(propertySlug);
-
     const { data, error } = await supabase
       .from("reservation")
       .select("check_in, check_out")
@@ -103,6 +92,17 @@ export async function getReservedDays(propertySlug: string) {
     };
   }
 }
+
+// Zwróci dane obiektu na podstawaie slug
+export const getCurrentProperty = (
+  pathname: string,
+  properties: HouseItem[] = PROPERTIES,
+) => {
+  const slug = pathname.split("/")[2];
+  const property = properties.find((property) => property.slug === slug);
+  return property as HouseItem;
+};
+
 export async function getPropertyId(propertySlug: string) {
   try {
     const property = PROPERTIES.find(

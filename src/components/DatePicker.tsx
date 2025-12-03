@@ -16,11 +16,14 @@ interface Prop {
   label: string;
   name: string;
   id: string;
+  defaultValue: Date | undefined;
 }
 
-const DatePicker = ({ label, name, id }: Prop) => {
+const DatePicker = ({ label, name, id, defaultValue }: Prop) => {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [date, setDate] = useState<Date | undefined>(
+    defaultValue ? defaultValue : undefined,
+  );
 
   return (
     <div className="flex flex-col gap-3">

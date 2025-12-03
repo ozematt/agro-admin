@@ -3,10 +3,10 @@ import { ReservationCalendarContent } from ".";
 import { createReservationDaysArr } from "@/lib/reservations";
 
 type Prop = {
-  propertySlug: string;
+  propertyId: number;
 };
-const ReservationCalendar = async ({ propertySlug }: Prop) => {
-  const data = await getReservedDays(propertySlug);
+const ReservationCalendar = async ({ propertyId }: Prop) => {
+  const data = await getReservedDays(propertyId);
 
   const reservedDates = data.reservationDays
     .map((d) => createReservationDaysArr(d.check_in, d.check_out))

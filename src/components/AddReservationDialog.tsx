@@ -13,18 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
 import { DatePicker } from "@/components";
 import { usePathname } from "next/navigation";
-import { getCurrentProperty } from "@/utils/helpers";
 import { Textarea } from "./ui/textarea";
 import {
   addReservationAction,
-  ReservationSchema,
-  State,
+  updateReservationAction,
+  type ReservationSchema,
+  type State,
 } from "@/app/panel/[slug]/actions";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { getCurrentProperty } from "@/lib/data";
+import { Reservation } from "./ReservationViewer";
 
 export const emptyReservation: ReservationSchema = {
   first_name: "",
@@ -46,40 +47,72 @@ export const emptyReservation: ReservationSchema = {
 export const initialState: State = {
   currentState: emptyReservation,
   success: undefined,
-  errors: null,
+  errors: undefined,
 };
 
-const AddReservationDialog = () => {
+type Props = {
+  reservation?: Reservation;
+  buttonTrigger?: React.ReactNode;
+  variant?: "edit" | "add";
+};
+
+// TODO: wymiecić kalendarze na te z wykluczającymi datami z croos
+
+const AddReservationDialog = ({
+  reservation,
+  buttonTrigger,
+  variant = "add",
+}: Props) => {
   const pathname = usePathname();
   const { name, id, Icon, description } = getCurrentProperty(pathname);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const [state, formAction, isPending] = useActionState(
-    addReservationAction,
+    variant === "add" ? addReservationAction : updateReservationAction,
     initialState,
   );
 
-  // useEffect(() => {
-  //   if (state.success) {
-  //     toast.success("Dodano rezerwację pomyślnie!");
-  //   }
-  // }, [state.success]);
+  useEffect(() => {
+    if (state.success) {
+      toast.success("Dodano rezerwację pomyślnie!");
+      setIsDialogOpen(false);
+    }
+    if (state.errors) {
+      toast.error("Błąd dodawania rezerwacji");
+    }
+  }, [state.success, state.errors]);
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="default" size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Dodaj rezerwację</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>{buttonTrigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Dodaj nową rezerwację</DialogTitle>
+          <DialogTitle>
+            {variant === "add" ? "Dodaj nową" : "Edytuj"} rezerwację
+          </DialogTitle>
           <DialogDescription>
             Wprowadź poniżej dane gościa i daty rezerwacji.
           </DialogDescription>
         </DialogHeader>
         <form action={formAction} className="space-y-4">
+          {/* Hidden inputs */}
+          {reservation && (
+            <>
+              <Input
+                type="hidden"
+                name="reservation_id"
+                value={reservation.id}
+              />
+              <Input
+                type="hidden"
+                name="guest_id"
+                value={reservation.guest_id.id}
+              />
+            </>
+          )}
+          {/* hidden status */}
+          <Input type="hidden" name="status" id="status" value="potwierdzony" />
           {/* Dane osobowe */}
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
@@ -90,9 +123,9 @@ const AddReservationDialog = () => {
                 type="text"
                 placeholder="Jan"
                 defaultValue={
-                  !state.success
-                    ? (state?.currentState?.first_name as string)
-                    : ""
+                  reservation?.guest_id.first_name ??
+                  state?.currentState?.first_name ??
+                  ""
                 }
               />
               {state.errors?.first_name && (
@@ -109,9 +142,9 @@ const AddReservationDialog = () => {
                 type="text"
                 placeholder="Kowalski"
                 defaultValue={
-                  !state.success
-                    ? (state?.currentState?.last_name as string)
-                    : ""
+                  reservation?.guest_id.last_name ??
+                  state?.currentState?.last_name ??
+                  ""
                 }
               />
               {state.errors?.last_name && (
@@ -131,7 +164,9 @@ const AddReservationDialog = () => {
                 type="tel"
                 placeholder="+48 123 456 778"
                 defaultValue={
-                  !state.success ? (state?.currentState?.phone as string) : ""
+                  reservation?.guest_id.phone ??
+                  state?.currentState?.phone ??
+                  ""
                 }
               />
               {state.errors?.phone && (
@@ -148,7 +183,9 @@ const AddReservationDialog = () => {
                 name="email"
                 placeholder="jan.kowalski@email.com"
                 defaultValue={
-                  !state.success ? (state?.currentState?.email as string) : ""
+                  reservation?.guest_id.email ??
+                  state?.currentState?.email ??
+                  ""
                 }
               />
               {state.errors?.email && (
@@ -168,7 +205,9 @@ const AddReservationDialog = () => {
                 name="adults"
                 type="number"
                 min="1"
-                defaultValue={!state.success ? state?.currentState?.adults : 2}
+                defaultValue={
+                  reservation?.adults ?? state?.currentState?.adults ?? ""
+                }
               />
               {state.errors?.adults && (
                 <p className="text-destructive text-[11px]">
@@ -184,7 +223,7 @@ const AddReservationDialog = () => {
                 type="number"
                 min="0"
                 defaultValue={
-                  !state.success ? state?.currentState?.children : 0
+                  reservation?.children ?? state?.currentState?.children ?? 0
                 }
               />
               {state.errors?.children && (
@@ -200,6 +239,7 @@ const AddReservationDialog = () => {
                 label="Data zameldowania"
                 name="check_in"
                 id="check_in"
+                defaultValue={reservation && new Date(reservation.check_in)}
               />
               {state.errors?.check_in && (
                 <p className="text-destructive text-[11px]">
@@ -212,6 +252,7 @@ const AddReservationDialog = () => {
                 label="Data wymeldowania"
                 name="check_out"
                 id="check_out"
+                defaultValue={reservation && new Date(reservation.check_out)}
               />
               {state.errors?.check_out && (
                 <p className="text-destructive text-[11px]">
@@ -250,7 +291,7 @@ const AddReservationDialog = () => {
               placeholder="Dodatkowe informacje o rezerwacji..."
               className="min-h-[100px] resize-none"
               defaultValue={
-                !state.success ? (state?.currentState?.notes as string) : ""
+                reservation?.notes ?? state?.currentState?.notes ?? ""
               }
             />
             {state.errors?.notes && (
@@ -259,8 +300,7 @@ const AddReservationDialog = () => {
               </p>
             )}
           </div>
-          {/* hidden input - STATUS */}
-          <Input type="hidden" name="status" id="status" value="potwierdzony" />
+
           <DialogFooter className="gap-2">
             <DialogClose asChild>
               <Button variant="outline" type="button">

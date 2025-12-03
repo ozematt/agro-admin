@@ -11,6 +11,7 @@ import {
   X,
   Bed,
   DollarSign,
+  MoreVertical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,17 +29,18 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { formatCheckInOut, formatCreatedAt } from "@/utils/helpers";
 import { type Reservation } from "./ReservationViewer";
-import { type HouseItem, PROPERTIES } from "@/config";
+import { type HouseItem } from "@/config";
 import { usePathname } from "next/navigation";
+import { getCurrentProperty } from "@/lib/data";
+import AddReservationDialog from "./AddReservationDialog";
+import { updateReservationStatus } from "@/app/panel/[slug]/actions";
 
 type Prop = { reservation: Reservation };
 
 const ReservationDetailsCard = ({ reservation }: Prop) => {
   const pathname = usePathname();
-  const slug = pathname.split("/")[2];
-  const propertyInfo = PROPERTIES.find((property) => property.slug === slug);
   const { name, description, Icon, beds, price_per_night, facilities } =
-    propertyInfo as HouseItem;
+    getCurrentProperty(pathname) as HouseItem;
 
   const {
     status,
@@ -49,8 +51,21 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
     created_at,
     reservation_number,
     notes,
+    adults,
+    children,
     guest_id: { first_name, last_name, email, phone },
   } = reservation;
+
+  const trigger = (
+    <Button
+      variant="ghost"
+      size="icon"
+      title="Edytuj"
+      className="hover:bg-foreground cursor-pointer"
+    >
+      <MoreVertical className="h-5 w-5" />
+    </Button>
+  );
 
   return (
     <div className="h-screen max-h-[90vh] max-w-5xl overflow-y-auto">
@@ -63,7 +78,7 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
             <CardHeader className="relative">
               <div
                 className={cn(
-                  "absolute -top-6 left-0 h-25 w-full rounded-t-xl bg-gradient-to-r to-transparent",
+                  "pointer-events-none absolute -top-6 left-0 h-25 w-full rounded-t-xl bg-gradient-to-r to-transparent",
                   status === "oczekujący" &&
                     "from-chart-4/10 dark:from-chart-3/20",
                   status === "potwierdzony" &&
@@ -94,6 +109,12 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                     Utworzono: {formatCreatedAt(created_at)}
                   </CardDescription>
                 </div>
+                {/* Edycja rezerwacji */}
+                <AddReservationDialog
+                  reservation={reservation}
+                  buttonTrigger={trigger}
+                  variant={"edit"}
+                />
               </div>
             </CardHeader>
 
@@ -175,23 +196,8 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                         <div>
                           <div className="font-medium">{guests} osoby</div>
                           <div className="text-muted-foreground text-sm">
-                            2 dorosłych, 2 dzieci ?
+                            {adults} dorosłych, {children} dzieci
                           </div>
-                        </div>
-                      </div>
-                      <Separator />
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Dorosłych
-                          </span>
-                          <span>2</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Dzieci (0-12 lat)
-                          </span>
-                          <span>2</span>
                         </div>
                       </div>
                     </div>
@@ -253,7 +259,7 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
 
                 <Separator />
 
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="flex gap-6">
                   <div className="space-y-4">
                     <h3 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
                       Kontakt
@@ -313,24 +319,6 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
                   </CardContent>
                 </Card>
 
-                {/* <Alert className="bg-emerald-500/5 border-emerald-500/20">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="w-8 h-8 bg-emerald-500/20">
-                        <AvatarFallback className="text-emerald-600 dark:text-emerald-400 text-xs">AK</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Wewnętrzna notatka (Anna K.)</span>
-                          <span className="text-xs text-muted-foreground">20 lis 2025, 10:15</span>
-                        </div>
-                        <AlertDescription>
-                          Potwierdzono późny check-in. Pokój 205 przygotowany z łóżeczkiem dziecięcym 
-                          i dodatkowym wyposażeniem. Przekazano informacje do zespołu recepcji.
-                        </AlertDescription>
-                      </div>
-                    </div>
-                  </Alert> */}
-
                 <Separator />
 
                 <div className="space-y-2">
@@ -387,18 +375,41 @@ const ReservationDetailsCard = ({ reservation }: Prop) => {
               <CardTitle className="text-base">Akcje</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full gap-2" size="lg">
-                <Check className="h-4 w-4" />
-                Zatwierdź rezerwację
-              </Button>
+              {status == "potwierdzony" ? null : (
+                <form action={updateReservationStatus}>
+                  <input type="hidden" name="status" value="potwierdzony" />
+                  <input
+                    type="hidden"
+                    name="reservation_id"
+                    value={reservation.id}
+                  />
+                  <Button className="w-full gap-2" size="lg">
+                    <Check className="h-4 w-4" />
+                    Zatwierdź rezerwację
+                  </Button>
+                </form>
+              )}
+
               <Button variant="outline" className="w-full gap-2">
                 <Mail className="h-4 w-4" />
                 Wyślij wiadomość
               </Button>
-              <Button variant="destructive" className="w-full gap-2">
-                <X className="h-4 w-4" />
-                Odrzuć rezerwację
-              </Button>
+              <form action={updateReservationStatus}>
+                <input type="hidden" name="status" value="odrzucony" />
+                <input
+                  type="hidden"
+                  name="reservation_id"
+                  value={reservation.id}
+                />
+                <Button
+                  variant="destructive"
+                  type="submit"
+                  className="w-full gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Odrzuć rezerwację
+                </Button>
+              </form>
             </CardContent>
           </Card>
 

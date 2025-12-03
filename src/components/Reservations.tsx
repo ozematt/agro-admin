@@ -12,14 +12,16 @@ import { ReservationViewer } from "@/components";
 import { cacheLife, cacheTag } from "next/cache";
 
 type Prop = {
-  propertySlug: string;
+  propertyId: number;
 };
 
-const Reservations = async ({ propertySlug }: Prop) => {
+// TODO: dodać overflow do diva rezerwacji
+const Reservations = async ({ propertyId }: Prop) => {
   // Pobieramy rezerwacje dla danego obiektu, cachujemy dane
   "use cache";
-  const { reservations, error } = await getReservation(propertySlug);
-  cacheTag(`reservation-${propertySlug}`, "reservation");
+  const { reservations, error } = await getReservation(propertyId);
+
+  cacheTag(`reservation-${propertyId}`, "reservation");
   cacheLife("minutes");
 
   return (
